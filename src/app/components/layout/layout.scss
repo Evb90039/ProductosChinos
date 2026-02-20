@@ -401,6 +401,40 @@
   }
 }
 
+/* iPad / tablet (768px–991px): espaciado, sin solapamiento con el header */
+@media (min-width: 768px) and (max-width: 991px) {
+  .layout-container {
+    padding-top: 72px; /* Un poco más que el header (70px) para evitar solapamiento */
+  }
+
+  .main-content {
+    height: calc(100vh - 72px);
+    padding: 1.25rem;
+    margin-top: 0;
+  }
+
+  .main-content .content-wrapper {
+    padding: 1.75rem;
+    margin: 0;
+    min-height: calc(100vh - 72px - 2.5rem);
+    height: auto;
+  }
+
+  .sidebar-modern {
+    top: 70px;
+    width: 300px;
+    min-height: calc(100vh - 70px);
+
+    &.show {
+      box-shadow: 6px 0 24px rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  .sidebar-backdrop {
+    top: 70px;
+  }
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

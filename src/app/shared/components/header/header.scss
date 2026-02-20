@@ -184,6 +184,41 @@
   }
 }
 
+/* iPad / tablet: evitar solapamiento y apiñamiento */
+@media (min-width: 768px) and (max-width: 991px) {
+  .header-modern {
+    height: 70px;
+    min-height: 70px;
+    overflow: hidden;
+
+    .container-fluid {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      gap: 0.75rem;
+    }
+
+    .header-logo {
+      max-width: 48px;
+      max-height: 48px;
+    }
+
+    .brand-text {
+      .brand-title {
+        font-size: 1.2rem;
+      }
+
+      .brand-subtitle {
+        font-size: 0.65rem;
+        letter-spacing: 0.03em;
+      }
+    }
+
+    .user-info .user-details .user-email {
+      max-width: 160px;
+    }
+  }
+}
+
 @media (max-width: 767px) {
   .header-modern {
     height: 60px;
