@@ -60,8 +60,14 @@ export const routes: Routes = [
       }
     ]
   },
-  { 
-    path: '**', 
-    redirectTo: '/dashboard' // Redirigir al dashboard en lugar de login
+  {
+    path: '404',
+    loadComponent: () => import('./components/not-found/not-found').then(m => m.NotFoundComponent),
+    title: 'Página no encontrada - Productos Chinos'
+  },
+  {
+    path: '**',
+    loadComponent: () => import('./components/not-found/not-found').then(m => m.NotFoundComponent),
+    title: 'Página no encontrada - Productos Chinos'
   }
 ];
