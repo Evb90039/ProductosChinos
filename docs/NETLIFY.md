@@ -82,6 +82,31 @@ Si usas el `netlify.toml` del repo, Netlify tomará estos valores automáticamen
 
 ---
 
+## Desarrollo local (Windows): variables de entorno
+
+Para no tener claves en el código y que local funcione igual que Netlify:
+
+1. **Archivo `.env`** (en la raíz del proyecto, no se sube a Git):
+   - Copia `.env.example` a `.env` y rellena los mismos nombres de variables que en Netlify (`FIREBASE_API_KEY`, etc.).
+   - Antes de `npm start`, el script `scripts/generate-env.js` lee `.env` y genera `src/environments/environment.ts`.
+
+2. **Variables de entorno en Windows** (opcional, para no depender de `.env`):
+   - Crea tu `.env` como arriba.
+   - En PowerShell, desde la raíz del proyecto:
+     ```powershell
+     .\scripts\set-env-windows.ps1
+     ```
+   - Eso crea las variables de **usuario** en Windows a partir de `.env`. Cierra y vuelve a abrir la terminal (o Cursor) para que se apliquen.
+   - A partir de ahí, `npm start` usará esas variables aunque no tengas `.env` en la carpeta.
+
+3. **Quitar `environment.ts` del historial de Git** (si antes tenías claves dentro):
+   ```bash
+   git rm --cached src/environments/environment.ts
+   ```
+   Luego haz commit. El archivo queda en `.gitignore` y se genera solo en tu máquina al hacer `npm start`.
+
+---
+
 ## Resumen del flujo
 
 1. En Netlify defines las variables de entorno.

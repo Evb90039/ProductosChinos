@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "prestart": "node scripts/generate-env.js",
     "build": "ng build",
     "build:netlify": "node scripts/generate-env.prod.js && ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
@@ -46,6 +47,7 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
+    "dotenv": "^16.4.5",
     "@netlify/angular-runtime": "^3.0.0",
     "sonarqube-scanner": "^3.3.0",
     "@angular/build": "^21.1.4",

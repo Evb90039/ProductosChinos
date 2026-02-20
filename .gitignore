@@ -45,6 +45,10 @@ testem.log
 /typings
 __screenshots__/
 
+# Environment (secretos; usar .env o variables de entorno)
+.env
+src/environments/environment.ts
+
 # System files
 .DS_Store
 Thumbs.db
