@@ -1,0 +1,15 @@
+<div class="notification-container">
+  @for (notification of (notificationService.notifications$ | async); track notification.id) {
+    <div 
+      class="notification notification-{{notification.type}}"
+      [attr.data-id]="notification.id">
+      <div class="notification-content">
+        <i class="fas {{getIcon(notification.type)}} notification-icon"></i>
+        <span class="notification-message">{{ notification.message }}</span>
+      </div>
+      <button class="notification-close" (click)="notificationService.remove(notification.id)">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  }
+</div>

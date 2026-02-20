@@ -1,0 +1,110 @@
+.spinner-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &.spinner-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(8px);
+  }
+
+  &.spinner-overlay .spinner-content {
+    animation: spinner-fade-in 0.25s ease-out;
+  }
+
+  &.spinner-block {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: inherit;
+    backdrop-filter: blur(4px);
+  }
+
+  &.spinner-block .spinner-content {
+    animation: spinner-fade-in 0.25s ease-out;
+  }
+}
+
+.spinner-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  &.spinner-sm .spinner-ring {
+    width: 22px;
+    height: 22px;
+    border-width: 2.5px;
+  }
+
+  &.spinner-md .spinner-ring {
+    width: 44px;
+    height: 44px;
+    border-width: 3.5px;
+  }
+
+  &.spinner-lg .spinner-ring {
+    width: 64px;
+    height: 64px;
+    border-width: 4px;
+  }
+}
+
+.spinner-ring {
+  border-radius: 50%;
+  border-style: solid;
+  border-color: rgba(218, 165, 32, 0.18);
+  border-top-color: #DAA520;
+  border-right-color: rgba(218, 165, 32, 0.6);
+  box-sizing: border-box;
+  animation: spin 0.75s cubic-bezier(0.5, 0.15, 0.5, 0.85) infinite;
+  will-change: transform;
+  box-shadow: 0 0 12px rgba(218, 165, 32, 0.2);
+}
+
+.spinner-overlay .spinner-ring,
+.spinner-block .spinner-ring {
+  box-shadow: 0 0 20px rgba(218, 165, 32, 0.25);
+}
+
+.spinner-message {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #475569;
+  letter-spacing: 0.02em;
+}
+
+.spinner-overlay .spinner-message,
+.spinner-block .spinner-message {
+  color: #1e293b;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinner-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

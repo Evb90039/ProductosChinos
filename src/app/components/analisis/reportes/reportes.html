@@ -1,0 +1,148 @@
+@if (vista$ | async; as vista) {
+  <div class="reportes-container">
+    <div class="page-header">
+      <div class="header-content">
+        <i class="fas fa-file-alt" style="color: #DAA520; font-size: 2rem; margin-right: 1rem;"></i>
+        <div>
+          <h1 class="page-title">Reportes de Ventas y Ganancias</h1>
+          <p class="page-subtitle">Última actualización: {{ ultimaActualizacion | date:'dd/MM/yyyy HH:mm' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-user-friends" style="color: #DAA520;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ vista.empleadosActivos }}</h3>
+            <p>Empleados activos</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-check-circle" style="color: #4CAF50;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ vista.productosVendidos }}</h3>
+            <p>Productos vendidos</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-thumbtack" style="color: #FF9800;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ vista.productosApartados }}</h3>
+            <p>Productos apartados</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-coins" style="color: #2196F3;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ formatMoney(vista.gananciaTotal) }}</h3>
+            <p>Ganancia empleados</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-hand-holding-usd" style="color: #DAA520;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ formatMoney(vista.gananciaTotalDueno) }}</h3>
+            <p>Mis ganancias</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-section">
+        <h2 class="section-title">Reporte por Empleado</h2>
+
+        <!-- Vista tabla: solo escritorio -->
+        <div class="reporte-table-wrap">
+          <table class="reporte-table">
+            <thead>
+              <tr>
+                <th class="col-empleado">Empleado</th>
+                <th class="col-num">Productos vendidos</th>
+                <th class="col-num">Productos apartados</th>
+                <th class="col-num">Productos parciales</th>
+                <th class="col-num">Total apartados (Precio Página)</th>
+                <th class="col-num">Total vendido</th>
+                <th class="col-num">Ganancia empleado</th>
+                <th class="col-num">Mi ganancia</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (r of vista.reportePorEmpleado; track r.empleado?.id ?? $index) {
+                <tr>
+                  <td class="col-empleado">
+                    @if (r.empleado) {
+                      <div class="empleado-cell">
+                        <div class="empleado-avatar">{{ getIniciales(r.empleado.fullName) }}</div>
+                        <div class="empleado-datos">
+                          <span class="empleado-nombre">{{ r.empleado.fullName }}</span>
+                          <span class="empleado-rol">{{ r.empleado.position }} - {{ r.empleado.department }}</span>
+                        </div>
+                      </div>
+                    } @else {
+                      <span class="sin-asignar-label">Ventas sin asignar</span>
+                    }
+                  </td>
+                  <td class="col-num text-vendidos">{{ r.productosVendidos }}</td>
+                  <td class="col-num text-muted">{{ r.productosApartados }}</td>
+                  <td class="col-num text-muted">{{ r.productosParciales }}</td>
+                  <td class="col-num text-apartados">{{ formatMoney(r.totalApartados) }}</td>
+                  <td class="col-num text-vendidos">{{ formatMoney(r.totalVendido) }}</td>
+                  <td class="col-num text-ganancia">{{ formatMoney(r.gananciaTotal) }}</td>
+                  <td class="col-num text-dueno">{{ formatMoney(r.gananciaDueno) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Vista cards: solo tablet y móvil -->
+        <div class="reporte-cards">
+          @for (r of vista.reportePorEmpleado; track r.empleado?.id ?? $index) {
+            <div class="reporte-card">
+              <div class="reporte-card-header">
+                @if (r.empleado) {
+                  <div class="empleado-avatar">{{ getIniciales(r.empleado.fullName) }}</div>
+                  <div class="empleado-datos">
+                    <span class="empleado-nombre">{{ r.empleado.fullName }}</span>
+                    <span class="empleado-rol">{{ r.empleado.position }} - {{ r.empleado.department }}</span>
+                  </div>
+                } @else {
+                  <span class="sin-asignar-label">Ventas sin asignar</span>
+                }
+              </div>
+              <div class="reporte-card-body">
+                <div class="reporte-card-row"><span class="label">Productos vendidos</span><span class="value text-vendidos">{{ r.productosVendidos }}</span></div>
+                <div class="reporte-card-row"><span class="label">Productos apartados</span><span class="value text-muted">{{ r.productosApartados }}</span></div>
+                <div class="reporte-card-row"><span class="label">Productos parciales</span><span class="value text-muted">{{ r.productosParciales }}</span></div>
+                <div class="reporte-card-row"><span class="label">Total apartados</span><span class="value text-apartados">{{ formatMoney(r.totalApartados) }}</span></div>
+                <div class="reporte-card-row"><span class="label">Total vendido</span><span class="value text-vendidos">{{ formatMoney(r.totalVendido) }}</span></div>
+                <div class="reporte-card-row"><span class="label">Ganancia empleado</span><span class="value text-ganancia">{{ formatMoney(r.gananciaTotal) }}</span></div>
+                <div class="reporte-card-row"><span class="label">Mi ganancia</span><span class="value text-dueno">{{ formatMoney(r.gananciaDueno) }}</span></div>
+              </div>
+            </div>
+          }
+        </div>
+
+        @if (vista.reportePorEmpleado.length === 0 && (!vista.productosVendidos || vista.productosVendidos === 0)) {
+          <div class="empty-state">
+            <i class="fas fa-users" style="color: #cbd5e1; font-size: 3rem; margin-bottom: 0.75rem;"></i>
+            <p>No hay empleados activos para mostrar en el reporte.</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+} @else {
+  <app-spinner mode="overlay" message="Cargando reportes..." size="lg"></app-spinner>
+}

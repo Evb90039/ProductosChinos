@@ -1,0 +1,94 @@
+@if (vista$ | async; as vista) {
+  <div class="vendedor-container">
+    <div class="page-header">
+      <div class="header-content">
+        <i class="fas fa-store" style="color: #DAA520; font-size: 2rem; margin-right: 1rem;"></i>
+        <div>
+          <h1 class="page-title">Vendedores</h1>
+          <p class="page-subtitle">Gestión de vendedores (nombre y teléfono)</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-primary" (click)="abrirModal()">
+          <i class="fas fa-plus"></i>
+          Nuevo Vendedor
+        </button>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-store" style="color: #DAA520;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ vista.total }}</h3>
+            <p>Total Vendedores</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-section">
+        <div class="table-header">
+          <h2 class="section-title">Listado de Vendedores</h2>
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Buscar por nombre o teléfono..." (input)="filtrarVendedores($event)">
+          </div>
+        </div>
+
+        @if (vista.filtered.length === 0 && !searchTerm()) {
+          <div class="empty-state">
+            <i class="fas fa-store" style="color: #cbd5e1; font-size: 4rem; margin-bottom: 1rem;"></i>
+            <p>No hay vendedores registrados. Agrega el primero con el botón "Nuevo Vendedor".</p>
+          </div>
+        }
+
+        @if (vista.filtered.length === 0 && searchTerm()) {
+          <div class="empty-state">
+            <i class="fas fa-search" style="color: #cbd5e1; font-size: 4rem; margin-bottom: 1rem;"></i>
+            <p>No se encontraron vendedores con "{{ searchTerm() }}"</p>
+          </div>
+        }
+
+        @if (vista.filtered.length > 0) {
+          <div class="vendedores-grid">
+            @for (v of vista.filtered; track v.id ?? $index) {
+              <div class="vendedor-card">
+                <div class="vendedor-card-header">
+                  <div class="vendedor-avatar-wrap">
+                    <div class="vendedor-avatar">{{ getIniciales(v.nombre) }}</div>
+                    <div class="vendedor-header-text">
+                      <h3 class="vendedor-name">{{ v.nombre }}</h3>
+                    </div>
+                  </div>
+                  <div class="vendedor-actions">
+                    <button class="btn-icon" title="Editar" (click)="editarVendedor(v)">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon btn-icon-danger" title="Eliminar" (click)="eliminarVendedor(v.id!)">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="vendedor-card-separator"></div>
+                <div class="vendedor-card-details">
+                  <div class="detail-row">
+                    <span class="detail-label"><i class="fas fa-phone"></i> TELÉFONO</span>
+                    <span class="detail-value">{{ v.telefono }}</span>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+} @else {
+  <app-spinner mode="overlay" message="Cargando vendedores..." size="lg"></app-spinner>
+}
+
+<app-vendedor-modal (vendedorGuardado)="guardarVendedor($event)"></app-vendedor-modal>
+<app-notification></app-notification>

@@ -1,0 +1,65 @@
+<div class="login-container min-vh-100 d-flex align-items-center justify-content-center">
+  <div class="card shadow-lg login-card">
+    <div class="card-body p-4 p-md-5">
+      <div class="text-center mb-4">
+        <div class="logo-container mb-3">
+          <img src="/icono.png" alt="Productos Chinos Logo" class="login-logo">
+        </div>
+        <h1 class="fw-bold mb-2">{{ isRegisterMode ? 'Registrarse' : 'Iniciar Sesión' }}</h1>
+        <p class="text-muted subtitle">Productos Chinos - Sistema de Gestión</p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="correo@ejemplo.com"
+            class="form-control form-control-lg"
+            [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+          />
+          <div class="invalid-feedback" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+            <span *ngIf="loginForm.get('email')?.errors?.['required']">El email es requerido</span>
+            <span *ngIf="loginForm.get('email')?.errors?.['email']">Email inválido</span>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Contraseña</label>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            placeholder="••••••••"
+            class="form-control form-control-lg"
+            [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+          />
+          <div class="invalid-feedback" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            <span *ngIf="loginForm.get('password')?.errors?.['required']">La contraseña es requerida</span>
+            <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Mínimo 6 caracteres</span>
+          </div>
+        </div>
+
+        <div class="alert alert-danger" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary btn-lg w-100"
+          [disabled]="loginForm.invalid || isLoading"
+        >
+          <span *ngIf="!isLoading">
+            {{ isRegisterMode ? 'Registrarse' : 'Iniciar Sesión' }}
+          </span>
+          <span *ngIf="isLoading" class="d-flex align-items-center justify-content-center">
+            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+            Procesando...
+          </span>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

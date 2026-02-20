@@ -1,0 +1,58 @@
+<div class="modal fade" #vendedorModal tabindex="-1" aria-labelledby="vendedorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="vendedorModalLabel">
+          <i class="fas fa-user-plus me-2" *ngIf="!editId"></i>
+          <i class="fas fa-user-edit me-2" *ngIf="editId"></i>
+          {{ editId ? 'Editar Vendedor' : 'Nuevo Vendedor' }}
+        </h5>
+        <button type="button" class="btn-close" (click)="cerrar()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="nombre" class="form-label">
+              <i class="fas fa-user me-1"></i>
+              Nombre
+              <span class="text-danger">*</span>
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="nombre"
+              [(ngModel)]="vendedor.nombre"
+              name="nombre"
+              placeholder="Ej: Juan Pérez"
+              required>
+          </div>
+          <div class="mb-3">
+            <label for="telefono" class="form-label">
+              <i class="fas fa-phone me-1"></i>
+              Teléfono
+              <span class="text-danger">*</span>
+            </label>
+            <input
+              type="tel"
+              class="form-control"
+              id="telefono"
+              [(ngModel)]="vendedor.telefono"
+              name="telefono"
+              placeholder="Ej: +52 555 123 4567"
+              required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrar()">
+          <i class="fas fa-times me-1"></i>
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" (click)="guardar()">
+          <i class="fas fa-save me-1"></i>
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

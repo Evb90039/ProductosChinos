@@ -1,0 +1,238 @@
+<div class="productos-container">
+  <div class="page-header">
+    <div class="header-content">
+      <i class="fas fa-box" style="color: #DAA520; font-size: 2rem; margin-right: 1rem;"></i>
+      <div>
+        <h1 class="page-title">Productos</h1>
+        <p class="page-subtitle">Gestión de inventario y catálogo</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="abrirModal()">
+        <i class="fas fa-plus"></i>
+        Nuevo Producto
+      </button>
+    </div>
+  </div>
+
+  <div class="content-section">
+    @if (vistaPagina$ | async; as vista) {
+      <div class="stats-grid">
+        <div class="stat-card" [class.active]="(filterType()) === 'todos'" (click)="setFilterType('todos')" title="Ver todos">
+          <div class="stat-icon">
+            <i class="fas fa-boxes" style="color: #DAA520;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ vista.total }}</h3>
+            <p>Total Productos</p>
+          </div>
+        </div>
+        <div class="stat-card" [class.active]="(filterType()) === 'catalogo'" (click)="setFilterType('catalogo')" title="Solo productos en catálogo (no apartados ni vendidos)">
+          <div class="stat-icon">
+            <i class="fas fa-check-circle" style="color: #4CAF50;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ vista.stats.enCatalogo }}</h3>
+            <p>En catálogo</p>
+          </div>
+        </div>
+        <div class="stat-card stat-apartados" [class.active]="(filterType()) === 'apartados'" (click)="setFilterType('apartados')" title="Solo apartados">
+          <div class="stat-icon">
+            <i class="fas fa-thumbtack" style="color: #FF9800;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ vista.stats.apartados }}</h3>
+            <p>Apartados</p>
+          </div>
+        </div>
+        <div class="stat-card stat-regalados" [class.active]="(filterType()) === 'regalados'" (click)="setFilterType('regalados')" title="Solo regalados">
+          <div class="stat-icon">
+            <i class="fas fa-gift"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ vista.stats.regalados }}</h3>
+            <p>Regalados</p>
+          </div>
+        </div>
+        <div class="stat-card stat-pendientes" [class.active]="(filterType()) === 'pendientes-resena'" (click)="setFilterType('pendientes-resena')" title="Pendientes de reseñar">
+          <div class="stat-icon">
+            <i class="fas fa-pen-fancy"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ vista.stats.pendientesResena }}</h3>
+            <p>Pend. reseña</p>
+          </div>
+        </div>
+        <div class="stat-card stat-rembolso" [class.active]="(filterType()) === 'pendientes-rembolso'" (click)="setFilterType('pendientes-rembolso')" title="Pendientes de rembolso">
+          <div class="stat-icon">
+            <i class="fas fa-undo"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ vista.stats.pendientesRembolso }}</h3>
+            <p>Pend. rembolso</p>
+          </div>
+        </div>
+        <div class="stat-card stat-vendidos" [class.active]="(filterType()) === 'vendidos'" (click)="setFilterType('vendidos')" title="Solo vendidos">
+          <div class="stat-icon">
+            <i class="fas fa-hand-holding-usd"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ vista.stats.vendidos }}</h3>
+            <p>Vendidos</p>
+          </div>
+        </div>
+        <div class="stat-card stat-devolucion" [class.active]="(filterType()) === 'con-devolucion'" (click)="setFilterType('con-devolucion')" title="Solo con devolución">
+          <div class="stat-icon">
+            <i class="fas fa-percentage"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ vista.stats.conDevolucion }}</h3>
+            <p>Con devolución</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-section" #tableSection>
+        <div class="table-header table-header-fixed">
+          <h2>Catálogo de Productos</h2>
+          <div class="header-toolbar">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" placeholder="Buscar producto..." (input)="filtrarProductos($event)">
+            </div>
+          </div>
+        </div>
+
+        <div class="table-body-scroll">
+        @if (vista.totalFiltered === 0 && !searchTerm()) {
+          <div class="empty-state">
+            <i class="fas fa-box-open" style="color: #cbd5e1; font-size: 4rem; margin-bottom: 1rem;"></i>
+            <p>No hay productos. Agrega el primero con «Nuevo Producto».</p>
+          </div>
+        }
+
+        @if (vista.totalFiltered === 0 && searchTerm()) {
+          <div class="empty-state">
+            <i class="fas fa-search" style="color: #cbd5e1; font-size: 4rem; margin-bottom: 1rem;"></i>
+            <p>No hay resultados para «{{ searchTerm() }}».</p>
+          </div>
+        }
+
+        @if (vista.totalFiltered > 0) {
+          <div class="product-list">
+            <div class="product-list-header">
+              <span class="col-imagen">Imagen</span>
+              <span class="col-nombre">Producto</span>
+              <span class="col-vendedor">Vendedor / Tienda</span>
+              <span class="col-precio-compra">Precio compra</span>
+              <span class="col-dinero-rembolsado">Dinero rembolsado</span>
+              <span class="col-precio-neto">Precio neto</span>
+              <span class="col-precio-pagina">Precio página</span>
+              <span class="col-ganancia">Ganancia · %</span>
+              <span class="col-estado">Estado</span>
+              <span class="col-acciones">Acciones</span>
+            </div>
+            @for (p of vista.paginated; track p.id) {
+              <div class="product-list-row">
+                <div class="col-imagen">
+                  @if (imagenPrincipal(p); as src) {
+                    <img [src]="src" alt="" class="product-list-thumb">
+                  } @else {
+                    <div class="product-list-thumb-placeholder">
+                      <i class="fas fa-image" style="color: #94a3b8;"></i>
+                    </div>
+                  }
+                </div>
+                <div class="col-nombre">
+                  <strong>{{ p.nombreProducto }}</strong>
+                </div>
+                <div class="col-vendedor">
+                  <span>{{ p.nombreVendedor }}</span>
+                  <span class="text-muted">{{ p.tienda }}</span>
+                </div>
+                <div class="col-precio-compra">
+                  @if (p.precioCompra != null) {
+                    <span>${{ p.precioCompra | number:'1.2-2' }}</span>
+                  } @else {
+                    <span class="text-muted">—</span>
+                  }
+                </div>
+                <div class="col-dinero-rembolsado">
+                  @if (p.dineroRembolsado != null) {
+                    <span>${{ p.dineroRembolsado | number:'1.2-2' }}</span>
+                  } @else {
+                    <span class="text-muted">—</span>
+                  }
+                </div>
+                <div class="col-precio-neto">
+                  @if (p.precioCompra != null || p.dineroRembolsado != null) {
+                    <span>${{ ((p.precioCompra ?? 0) - (p.dineroRembolsado ?? 0)) | number:'1.2-2' }}</span>
+                  } @else {
+                    <span class="text-muted">—</span>
+                  }
+                </div>
+                <div class="col-precio-pagina">
+                  @if (p.precioPagina != null) {
+                    <span>${{ p.precioPagina | number:'1.2-2' }}</span>
+                  } @else {
+                    <span class="text-muted">—</span>
+                  }
+                </div>
+                <div class="col-ganancia">
+                  @let precioNeto = (p.precioCompra ?? 0) - (p.dineroRembolsado ?? 0);
+                  @let ganancia = (p.precioPagina ?? 0) - precioNeto;
+                  @if (p.precioPagina != null) {
+                    <span class="ganancia-monto">${{ ganancia | number:'1.2-2' }}</span>
+                    @if (precioNeto !== 0) {
+                      <span class="ganancia-pct">{{ (ganancia / precioNeto * 100) | number:'1.2-2' }}%</span>
+                    } @else {
+                      <span class="text-muted">—</span>
+                    }
+                  } @else {
+                    <span class="text-muted">—</span>
+                  }
+                </div>
+                <div class="col-estado">
+                  @if (p.vendido) {
+                    <span class="estado-tag vendido">Vendido</span>
+                  } @else if (p.apartado) {
+                    <span class="estado-tag apartado">Apartado</span>
+                  } @else {
+                    <span class="estado-tag disponible">Disponible</span>
+                  }
+                </div>
+                <div class="col-acciones">
+                  <button type="button" class="btn-icon" title="Editar" (click)="editarProducto(p)">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button type="button" class="btn-icon" title="Eliminar" (click)="eliminarProducto(p.id!)">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+        </div>
+      </div>
+
+      @if (vista.totalFiltered > 0 && vista.totalPages > 1) {
+        <div class="pagination-footer">
+          <button type="button" class="pagination-btn" [disabled]="vista.currentPage <= 1" (click)="setPage(vista.currentPage - 1)" title="Anterior">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <span class="pagination-info">Página {{ vista.currentPage }} de {{ vista.totalPages }} ({{ vista.totalFiltered }} en total)</span>
+          <button type="button" class="pagination-btn" [disabled]="vista.currentPage >= vista.totalPages" (click)="setPage(vista.currentPage + 1)" title="Siguiente">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      }
+    }
+  </div>
+</div>
+
+@if (saving()) {
+  <app-spinner mode="overlay" message="Guardando producto..." size="lg"></app-spinner>
+}
+<app-producto-modal (productoGuardado)="guardarProducto($event)"></app-producto-modal>
+<app-notification></app-notification>

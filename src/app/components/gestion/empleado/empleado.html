@@ -1,0 +1,121 @@
+@if (vista$ | async; as vista) {
+  <div class="empleado-container">
+    <div class="page-header">
+      <div class="header-content">
+        <i class="fas fa-users" style="color: #DAA520; font-size: 2rem; margin-right: 1rem;"></i>
+        <div>
+          <h1 class="page-title">Empleados</h1>
+          <p class="page-subtitle">Gestión de personal y equipo</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-primary" (click)="abrirModal()">
+          <i class="fas fa-plus"></i>
+          Nuevo Empleado
+        </button>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-user-friends" style="color: #DAA520;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ vista.total }}</h3>
+            <p>Total Empleados</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-user-check" style="color: #4CAF50;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ vista.total }}</h3>
+            <p>Activos</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-user-clock" style="color: #FF9800;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>0</h3>
+            <p>Inactivos</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-section">
+        <div class="table-header">
+          <h2 class="section-title">Listado de Empleados</h2>
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Buscar empleado..." (input)="filtrarEmpleados($event)">
+          </div>
+        </div>
+
+        @if (vista.filtered.length === 0 && !searchTerm()) {
+          <div class="empty-state">
+            <i class="fas fa-users" style="color: #cbd5e1; font-size: 4rem; margin-bottom: 1rem;"></i>
+            <p>No hay empleados registrados. Agrega el primero con el botón "Nuevo Empleado".</p>
+          </div>
+        }
+
+        @if (vista.filtered.length === 0 && searchTerm()) {
+          <div class="empty-state">
+            <i class="fas fa-search" style="color: #cbd5e1; font-size: 4rem; margin-bottom: 1rem;"></i>
+            <p>No se encontraron empleados con "{{ searchTerm() }}"</p>
+          </div>
+        }
+
+        @if (vista.filtered.length > 0) {
+          <div class="empleados-grid">
+            @for (empleado of vista.filtered; track empleado.id ?? $index) {
+              <div class="empleado-card">
+                <div class="empleado-card-header">
+                  <div class="empleado-avatar-wrap">
+                    <div class="empleado-avatar">{{ getIniciales(empleado.fullName) }}</div>
+                    <div class="empleado-header-text">
+                      <h3 class="empleado-name">{{ empleado.fullName }}</h3>
+                      <span class="empleado-badge empleado-badge-role">{{ empleado.position }}</span>
+                    </div>
+                  </div>
+                  <div class="empleado-actions">
+                    <button class="btn-icon" title="Editar" (click)="editarEmpleado(empleado)">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon btn-icon-danger" title="Eliminar" (click)="eliminarEmpleado(empleado.id!)">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="empleado-card-separator"></div>
+                <div class="empleado-card-details">
+                  <div class="detail-row">
+                    <span class="detail-label"><i class="fas fa-phone"></i> TELÉFONO</span>
+                    <span class="detail-value">{{ empleado.phone }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label"><i class="fas fa-building"></i> DEPARTAMENTO</span>
+                    <span class="detail-value"><span class="empleado-badge empleado-badge-dept">{{ empleado.department }}</span></span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label"><i class="fas fa-calendar-alt"></i> FECHA DE INGRESO</span>
+                    <span class="detail-value">{{ empleado.hireDate }}</span>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+} @else {
+  <app-spinner mode="overlay" message="Cargando empleados..." size="lg"></app-spinner>
+}
+
+<app-empleado-modal (empleadoGuardado)="guardarEmpleado($event)"></app-empleado-modal>
+<app-notification></app-notification>

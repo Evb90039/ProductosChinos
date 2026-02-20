@@ -1,0 +1,128 @@
+<div class="layout-container">
+  <!-- Header Component -->
+  <app-header [currentUserEmail]="currentUserEmail" [isSidebarOpen]="isSidebarOpen" (logout)="logout()" (toggleSidebar)="toggleSidebar()"></app-header>
+
+  <!-- Sidebar Offcanvas -->
+  <div class="offcanvas offcanvas-start sidebar-modern" 
+       tabindex="-1" 
+       id="sidebarOffcanvas"
+       [class.show]="isSidebarOpen">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <div class="brand-logo">
+          <img src="/icono.png" alt="Logo">
+        </div>
+        <div class="brand-info">
+          <h5 class="brand-name">Productos Chinos</h5>
+          <span class="brand-version">v2.0</span>
+        </div>
+      </div>
+      <button type="button" class="btn-close btn-close-white" (click)="toggleSidebar()"></button>
+    </div>
+    
+    <div class="sidebar-body">
+      <!-- User Profile -->
+      <div class="user-profile">
+        <div class="profile-avatar">
+          <i class="fas fa-user-circle" style="color: #00BCD4; font-size: 1.5rem;"></i>
+        </div>
+        <div class="profile-info">
+          <div class="profile-name">Administrador</div>
+          <div class="profile-email">{{ currentUserEmail }}</div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-title">Principal</div>
+          <div class="nav-items">
+            <a class="nav-item active" (click)="navigateTo('/dashboard')">
+              <i class="fas fa-chart-pie" style="color: #4CAF50;"></i>
+              <span class="nav-text">Dashboard</span>
+              <span class="nav-badge">{{ principalMenuCount }}</span>
+            </a>
+            
+            <div class="nav-item nav-parent" (click)="toggleGestionCollapse()">
+              <i class="fas fa-clipboard-list" style="color: #2196F3;"></i>
+              <span class="nav-text">Gestión</span>
+              <span class="nav-badge">{{ gestionMenuItems.length }}</span>
+              <span class="nav-arrow" [class.rotated]="!isGestionCollapsed">▼</span>
+            </div>
+            
+            <div class="nav-submenu" [class.collapsed]="isGestionCollapsed">
+              @for (item of gestionMenuItems; track item.route) {
+                <a class="nav-item nav-subitem" [routerLink]="item.route">
+                  <i class="fas" [ngClass]="item.icon" [style.color]="item.iconColor"></i>
+                  <span class="nav-text">{{ item.label }}</span>
+                </a>
+              }
+            </div>
+            
+            <div class="nav-item nav-parent" (click)="toggleAnalisisCollapse()">
+              <i class="fas fa-chart-line" style="color: #F44336;"></i>
+              <span class="nav-text">Análisis</span>
+              <span class="nav-badge">{{ analisisMenuItems.length }}</span>
+              <span class="nav-arrow" [class.rotated]="!isAnalisisCollapsed">▼</span>
+            </div>
+            
+            <div class="nav-submenu" [class.collapsed]="isAnalisisCollapsed">
+              @for (item of analisisMenuItems; track item.route) {
+                <a class="nav-item nav-subitem" [routerLink]="item.route">
+                  <i class="fas" [ngClass]="item.icon" [style.color]="item.iconColor"></i>
+                  <span class="nav-text">{{ item.label }}</span>
+                </a>
+              }
+            </div>
+          </div>
+        </div>
+<!--
+        <div class="nav-section">
+          <div class="nav-title">Herramientas</div>
+          <div class="nav-items">
+            <a class="nav-item" href="#">
+              <i class="fas fa-cog" style="color: #607D8B;"></i>
+              <span class="nav-text">Configuración</span>
+            </a>
+            
+            <a class="nav-item" href="#">
+              <i class="fas fa-bell" style="color: #FFC107;"></i>
+              <span class="nav-text">Notificaciones</span>
+              <span class="nav-badge">8</span>
+            </a>
+          </div>
+        </div>
+-->
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <div class="footer-stats" *ngIf="statsProductos$ | async as stats">
+          <div class="stat-item">
+            <span class="stat-value">{{ stats.total | number }}</span>
+            <span class="stat-label">Productos totales</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{ stats.vendidos | number }}</span>
+            <span class="stat-label">Productos vendidos</span>
+          </div>
+        </div>
+        <div class="footer-actions">
+          <button class="btn-footer">
+            <i class="fas fa-chart-bar" style="color: #4CAF50;"></i>
+            <span>Ver Estadísticas</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content" [class.sidebar-open]="isSidebarOpen">
+    <div class="container-fluid">
+      <div class="">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </main>
+</div>

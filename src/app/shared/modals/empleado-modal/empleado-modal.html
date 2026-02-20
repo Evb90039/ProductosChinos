@@ -1,0 +1,106 @@
+<div class="modal fade" #empleadoModal tabindex="-1" aria-labelledby="empleadoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="empleadoModalLabel">
+          <i class="fas fa-user-plus me-2" *ngIf="!editId"></i>
+          <i class="fas fa-user-edit me-2" *ngIf="editId"></i>
+          {{ editId ? 'Editar Empleado' : 'Nuevo Empleado' }}
+        </h5>
+        <button type="button" class="btn-close" (click)="cerrar()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="fullName" class="form-label">
+              <i class="fas fa-user me-1"></i>
+              Nombre Completo
+              <span class="text-danger">*</span>
+            </label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="fullName" 
+              [(ngModel)]="empleado.fullName"
+              name="fullName"
+              placeholder="Ej: Juan Pérez García"
+              required>
+          </div>
+
+          <div class="mb-3">
+            <label for="phone" class="form-label">
+              <i class="fas fa-phone me-1"></i>
+              Teléfono
+              <span class="text-danger">*</span>
+            </label>
+            <input 
+              type="tel" 
+              class="form-control" 
+              id="phone" 
+              [(ngModel)]="empleado.phone"
+              name="phone"
+              placeholder="Ej: +52 555 123 4567"
+              required>
+          </div>
+
+          <div class="mb-3">
+            <label for="position" class="form-label">
+              <i class="fas fa-briefcase me-1"></i>
+              Cargo
+              <span class="text-danger">*</span>
+            </label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="position" 
+              [(ngModel)]="empleado.position"
+              name="position"
+              placeholder="Ej: Gerente de Ventas"
+              required>
+          </div>
+
+          <div class="mb-3">
+            <label for="department" class="form-label">
+              <i class="fas fa-building me-1"></i>
+              Departamento
+              <span class="text-danger">*</span>
+            </label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="department" 
+              [(ngModel)]="empleado.department"
+              name="department"
+              placeholder="Ej: Ventas"
+              required>
+          </div>
+
+          <div class="mb-3">
+            <label for="hireDate" class="form-label">
+              <i class="fas fa-calendar-alt me-1"></i>
+              Fecha de Ingreso
+              <span class="text-danger">*</span>
+            </label>
+            <input 
+              type="date" 
+              class="form-control" 
+              id="hireDate" 
+              [(ngModel)]="empleado.hireDate"
+              name="hireDate"
+              required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrar()">
+          <i class="fas fa-times me-1"></i>
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" (click)="guardar()">
+          <i class="fas fa-save me-1"></i>
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

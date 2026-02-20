@@ -1,0 +1,218 @@
+import { Component, ViewChild, inject, signal, ElementRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { combineLatest, Subject } from 'rxjs';
+import { map, shareReplay, catchError, startWith, switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { ProductoModalComponent, ProductoGuardadoEvent } from '../../../shared/modals/producto-modal/producto-modal';
+import { StorageService } from '../../../services/storage.service';
+import { ProductosService, Producto } from '../../../services/productos.service';
+import { NotificationService } from '../../../services/notification.service';
+import { NotificationComponent } from '../../../shared/components/notification/notification';
+import { SpinnerComponent } from '../../../shared/components/spinner/spinner';
+
+@Component({
+  selector: 'app-productos',
+  imports: [CommonModule, ProductoModalComponent, NotificationComponent, SpinnerComponent],
+  templateUrl: './productos.html',
+  styleUrls: ['./productos.scss'],
+})
+export class ProductosComponent {
+  @ViewChild(ProductoModalComponent) productoModal!: ProductoModalComponent;
+  @ViewChild('tableSection') tableSectionRef?: ElementRef<HTMLElement>;
+
+  private readonly storageService = inject(StorageService);
+  private readonly productosService = inject(ProductosService);
+  private readonly notificationService = inject(NotificationService);
+
+  readonly searchTerm = signal('');
+  /** Filtro rápido: todos | catalogo | apartados | pendientes-resena | pendientes-rembolso | regalados | vendidos | con-devolucion */
+  readonly filterType = signal<'todos' | 'catalogo' | 'apartados' | 'pendientes-resena' | 'pendientes-rembolso' | 'regalados' | 'vendidos' | 'con-devolucion'>('catalogo');
+  /** true mientras se guarda (agregar/actualizar) para mostrar overlay spinner. */
+  readonly saving = signal(false);
+  /** Página actual (1-based). */
+  readonly currentPage = signal(1);
+  readonly pageSize = 8;
+  private readonly refresh$ = new Subject<void>();
+
+  readonly productos$ = this.refresh$.pipe(
+    startWith(undefined),
+    switchMap(() =>
+      this.productosService.obtenerProductos().pipe(
+        catchError((err) => {
+          console.error('Error al cargar productos:', err);
+          return of([]);
+        })
+      )
+    ),
+    shareReplay(1)
+  );
+
+  readonly vista$ = combineLatest([
+    this.productos$,
+    toObservable(this.searchTerm).pipe(startWith('')),
+    toObservable(this.filterType).pipe(startWith('catalogo')),
+  ]).pipe(
+    map(([productos, term, filterType]) => {
+      const t = term.trim().toLowerCase();
+      let list = !t
+        ? productos
+        : productos.filter(
+            (p) =>
+              p.nombreProducto?.toLowerCase().includes(t) ||
+              p.nombreVendedor?.toLowerCase().includes(t) ||
+              p.tienda?.toLowerCase().includes(t)
+          );
+      switch (filterType) {
+        case 'catalogo':
+          list = list.filter((p) => !p.apartado && !p.vendido && !p.regalado && (p.precioPagina != null && p.precioPagina !== 0));
+          break;
+        case 'apartados':
+          list = list.filter((p) => p.apartado);
+          break;
+        case 'pendientes-resena':
+          list = list.filter((p) => !p.resenado);
+          break;
+        case 'pendientes-rembolso':
+          list = list.filter(
+            (p) =>
+              (p.precioCompra ?? 0) > 0 &&
+              (p.dineroRembolsado ?? 0) === 0
+          );
+          break;
+        case 'regalados':
+          list = list.filter((p) => p.regalado);
+          break;
+        case 'vendidos':
+          list = list.filter((p) => p.vendido);
+          break;
+        case 'con-devolucion':
+          list = list.filter((p) => p.conDevolucion);
+          break;
+        default:
+          break;
+      }
+      const total = productos.length;
+      const regalados = productos.filter((p) => p.regalado).length;
+      const pendientesResena = productos.filter((p) => !p.resenado).length;
+      const pendientesRembolso = productos.filter(
+        (p) =>
+          (p.precioCompra ?? 0) > 0 &&
+          (p.dineroRembolsado ?? 0) === 0
+      ).length;
+      const vendidos = productos.filter((p) => p.vendido).length;
+      const conDevolucion = productos.filter((p) => p.conDevolucion).length;
+      const enCatalogo = productos.filter((p) => !p.apartado && !p.vendido && !p.regalado && (p.precioPagina != null && p.precioPagina !== 0)).length;
+      const apartados = productos.filter((p) => p.apartado).length;
+      return {
+        filtered: list,
+        total,
+        stats: {
+          regalados,
+          pendientesResena,
+          pendientesRembolso,
+          vendidos,
+          conDevolucion,
+          enCatalogo,
+          apartados,
+        },
+      };
+    })
+  );
+
+  /** Vista con lista paginada (8 por página). */
+  readonly vistaPagina$ = combineLatest([
+    this.vista$,
+    toObservable(this.currentPage).pipe(startWith(1)),
+  ]).pipe(
+    map(([vista, page]) => {
+      const size = this.pageSize;
+      const total = vista.filtered.length;
+      const totalPages = Math.max(1, Math.ceil(total / size));
+      const current = Math.min(Math.max(1, page), totalPages);
+      const start = (current - 1) * size;
+      const paginated = vista.filtered.slice(start, start + size);
+      return {
+        ...vista,
+        paginated,
+        currentPage: current,
+        totalPages,
+        totalFiltered: total,
+      };
+    })
+  );
+
+  abrirModal() {
+    this.productoModal.abrir();
+  }
+
+  editarProducto(producto: Producto) {
+    this.productoModal.abrirParaEditar(producto);
+  }
+
+  async eliminarProducto(id: string) {
+    if (!confirm('¿Eliminar este producto?')) return;
+    try {
+      await this.productosService.eliminarProducto(id);
+      this.refresh$.next();
+      this.notificationService.show('Producto eliminado', 'success', 3000);
+    } catch (error) {
+      console.error('Error al eliminar:', error);
+      this.notificationService.show('Error al eliminar el producto', 'error', 3000);
+    }
+  }
+
+  filtrarProductos(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.searchTerm.set(input.value);
+    this.currentPage.set(1);
+  }
+
+  setFilterType(value: 'todos' | 'catalogo' | 'apartados' | 'pendientes-resena' | 'pendientes-rembolso' | 'regalados' | 'vendidos' | 'con-devolucion') {
+    this.filterType.set(value);
+    this.currentPage.set(1);
+  }
+
+  setPage(page: number) {
+    this.currentPage.set(page);
+    // Mantener la vista estable: scroll al inicio del catálogo para que la paginación no “salte”
+  }
+
+  /** URL de la imagen principal del producto (o null si no hay). */
+  imagenPrincipal(producto: Producto): string | null {
+    const urls = producto.imagenesUrls ?? [];
+    const idx = producto.imagenPrincipalIndex ?? 0;
+    return urls[idx] ?? urls[0] ?? null;
+  }
+
+  async guardarProducto(data: ProductoGuardadoEvent) {
+    this.saving.set(true);
+    try {
+      const archivos = this.productoModal.getArchivosImagenes();
+      let urlsImagenes = data.imagenesUrls ?? [];
+
+      if (archivos.length > 0) {
+        const urlsNuevas = await this.storageService.subirImagenes(archivos, data.nombreProducto);
+        urlsImagenes = [...urlsImagenes, ...urlsNuevas];
+      }
+
+      const payload = { ...data, imagenesUrls: urlsImagenes };
+
+      if (data.id) {
+        const { id, ...resto } = payload;
+        await this.productosService.actualizarProducto(id!, { ...resto });
+        this.notificationService.show('Producto actualizado correctamente', 'success', 3000);
+      } else {
+        await this.productosService.agregarProducto(payload);
+        this.notificationService.show('Producto guardado. Imágenes en Cloudinary.', 'success', 3000);
+      }
+      this.refresh$.next();
+    } catch (error) {
+      console.error('Error al guardar producto:', error);
+      this.notificationService.show('Error al guardar el producto', 'error', 3000);
+    } finally {
+      this.saving.set(false);
+      this.productoModal.cerrar();
+    }
+  }
+}

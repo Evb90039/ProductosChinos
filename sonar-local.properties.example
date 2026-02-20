@@ -1,0 +1,3 @@
+# Copia este archivo a sonar-local.properties y reemplaza con tu token.
+# sonar-local.properties está en .gitignore (no se sube a Git).
+sonar.login=TU_TOKEN_DE_SONARQUBE

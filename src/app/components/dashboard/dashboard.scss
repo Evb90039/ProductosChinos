@@ -1,0 +1,233 @@
+.dashboard-container {
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid rgba(218, 165, 32, 0.2);
+
+    .header-content {
+      display: flex;
+      align-items: center;
+
+      .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #DAA520, #FFD700);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 0 0 0.25rem 0;
+      }
+
+      .page-subtitle {
+        color: #64748b;
+        margin: 0;
+        font-size: 1rem;
+      }
+    }
+
+    .header-actions {
+      // Sin botón en dashboard; misma alineación que Empleados/Productos/Vendedores
+    }
+  }
+
+  .content-section {
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+
+      .stat-card {
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(218, 165, 32, 0.1));
+        border: 1px solid rgba(218, 165, 32, 0.3);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 25px rgba(218, 165, 32, 0.2);
+          border-color: rgba(218, 165, 32, 0.5);
+        }
+
+        .stat-icon {
+          width: 60px;
+          height: 60px;
+          background: white;
+          border-radius: 1rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 15px rgba(218, 165, 32, 0.2);
+
+          i {
+            font-size: 1.5rem;
+          }
+        }
+
+        .stat-info {
+          h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #DAA520, #B8860B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0 0 0.25rem 0;
+          }
+
+          p {
+            color: #64748b;
+            margin: 0;
+            font-size: 0.875rem;
+          }
+        }
+
+        &.stat-dinero .stat-info h3 {
+          color: #15803d;
+        }
+      }
+    }
+
+    .table-section {
+      .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+
+        .section-title {
+          font-size: 1.5rem;
+          font-weight: 600;
+          margin: 0;
+          color: transparent;
+          background: linear-gradient(135deg, #DAA520, #FFD700);
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: rgba(218, 165, 32, 0.05);
+        border-radius: 1rem;
+        border: 2px dashed rgba(218, 165, 32, 0.3);
+        color: #64748b;
+      }
+
+      .vendedor-block {
+        margin-bottom: 1rem;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+
+        .vendedor-name.collapse-toggle {
+          width: 100%;
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: #1e293b;
+          margin: 0;
+          padding: 1rem 1.25rem;
+          background: linear-gradient(135deg, rgba(218, 165, 32, 0.12), rgba(218, 165, 32, 0.06));
+          border: none;
+          border-bottom: 1px solid #e2e8f0;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+          cursor: pointer;
+          text-align: left;
+          transition: background 0.2s;
+
+          &:hover {
+            background: linear-gradient(135deg, rgba(218, 165, 32, 0.18), rgba(218, 165, 32, 0.1));
+          }
+
+          .fa-store {
+            color: #DAA520;
+          }
+
+          .vendedor-name-text {
+            flex: 1;
+            min-width: 0;
+          }
+
+          .vendedor-total {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #15803d;
+          }
+
+          .collapse-chevron {
+            color: #64748b;
+            font-size: 0.875rem;
+            transition: transform 0.2s;
+          }
+        }
+
+        &:not(.expanded) .vendedor-name.collapse-toggle {
+          border-bottom: none;
+        }
+
+        .table-wrap {
+          overflow-x: auto;
+        }
+
+        .rembolso-table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 0.9rem;
+
+          th,
+          td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+          }
+
+          th {
+            font-weight: 600;
+            color: #475569;
+            background: #f8fafc;
+          }
+
+          td {
+            color: #334155;
+          }
+
+          .col-num {
+            text-align: right;
+            white-space: nowrap;
+          }
+
+          tbody tr:last-child td {
+            border-bottom: none;
+          }
+
+          tbody tr:hover {
+            background: rgba(218, 165, 32, 0.04);
+          }
+
+          .text-muted {
+            color: #94a3b8;
+          }
+        }
+      }
+    }
+  }
+}

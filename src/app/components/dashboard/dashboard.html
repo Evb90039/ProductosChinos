@@ -1,0 +1,102 @@
+@if (datos$ | async; as datos) {
+  <div class="dashboard-container">
+    <div class="page-header">
+      <div class="header-content">
+        <i class="fas fa-chart-pie" style="color: #DAA520; font-size: 2rem; margin-right: 1rem;"></i>
+        <div>
+          <h1 class="page-title">Dashboard</h1>
+          <p class="page-subtitle">Resumen de rembolsos pendientes</p>
+        </div>
+      </div>
+      <div class="header-actions">
+      </div>
+    </div>
+
+    <div class="content-section">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-box-open" style="color: #2196F3;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ datos.cantidadPendientes }}</h3>
+            <p>Productos por rembolsar</p>
+          </div>
+        </div>
+        <div class="stat-card stat-dinero">
+          <div class="stat-icon">
+            <i class="fas fa-dollar-sign" style="color: #4CAF50;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>${{ datos.dineroPendiente | number:'1.2-2' }}</h3>
+            <p>Dinero pendiente de rembolso</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-section">
+        <div class="table-header">
+          <h2 class="section-title">Por vendedor: artículos pendientes de rembolso</h2>
+        </div>
+
+        @if (datos.porVendedor.length === 0) {
+          <div class="empty-state">
+            <i class="fas fa-check-circle" style="color: #4CAF50; font-size: 4rem; margin-bottom: 1rem;"></i>
+            <p>No hay productos pendientes de rembolso.</p>
+          </div>
+        }
+
+        @if (datos.porVendedor.length > 0) {
+          @for (v of datos.porVendedor; track v.nombreVendedor) {
+            <div class="vendedor-block" [class.expanded]="expandedVendedor() === v.nombreVendedor">
+              <button type="button" class="vendedor-name collapse-toggle" (click)="toggleVendedor(v.nombreVendedor)">
+                <i class="fas fa-store"></i>
+                <span class="vendedor-name-text">{{ v.nombreVendedor }}</span>
+                <span class="vendedor-total">Total pendiente: ${{ v.totalPendiente | number:'1.2-2' }}</span>
+                <i class="fas collapse-chevron" [class.fa-chevron-down]="expandedVendedor() !== v.nombreVendedor" [class.fa-chevron-up]="expandedVendedor() === v.nombreVendedor"></i>
+              </button>
+              @if (expandedVendedor() === v.nombreVendedor) {
+                <div class="table-wrap">
+                  <table class="rembolso-table">
+                    <thead>
+                      <tr>
+                        <th>Artículo</th>
+                        <th class="col-num">Precio compra</th>
+                        <th class="col-num">% Devolución</th>
+                        <th class="col-num">Monto con devolución</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (p of v.productos; track p.id) {
+                        <tr>
+                          <td>{{ p.nombreProducto }}</td>
+                          <td class="col-num">${{ (p.precioCompra ?? 0) | number:'1.2-2' }}</td>
+                          <td class="col-num">
+                            @if (p.conDevolucion && (p.porcentajeDevolucion ?? 0) > 0) {
+                              {{ p.porcentajeDevolucion }}%
+                            } @else {
+                              <span class="text-muted">—</span>
+                            }
+                          </td>
+                          <td class="col-num">
+                            @if (p.montoConDevolucion != null && p.montoConDevolucion > 0) {
+                              ${{ p.montoConDevolucion | number:'1.2-2' }}
+                            } @else {
+                              <span class="text-muted">—</span>
+                            }
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              }
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+} @else {
+  <app-spinner mode="overlay" message="Cargando dashboard..." size="lg"></app-spinner>
+}

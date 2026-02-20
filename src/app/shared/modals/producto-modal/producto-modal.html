@@ -1,0 +1,306 @@
+<div class="modal fade" #productoModal tabindex="-1" aria-labelledby="productoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="productoModalLabel">
+          <i class="fas fa-box me-2"></i>
+          {{ editId ? 'Editar Producto' : 'Agregar Nuevo Producto' }}
+        </h5>
+        <button type="button" class="btn-close" (click)="cerrar()" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="modal-tabs">
+          <li>
+            <button type="button" class="modal-tab" [class.active]="activeTab === 'producto'" (click)="setTab('producto')">
+              Producto
+            </button>
+          </li>
+          <li>
+            <button type="button" class="modal-tab" [class.active]="activeTab === 'vendedor'" (click)="setTab('vendedor')">
+              Vendedor
+            </button>
+          </li>
+          <li>
+            <button type="button" class="modal-tab" [class.active]="activeTab === 'finanzas'" (click)="setTab('finanzas')">
+              Finanzas y Estado
+            </button>
+          </li>
+        </ul>
+
+        @if (activeTab === 'producto') {
+          <div class="tab-content">
+            <h6 class="tab-section-title">Información del Producto</h6>
+            <div class="mb-3">
+              <label for="nombreProducto" class="form-label">
+                <i class="fas fa-tag me-1"></i>
+                Nombre del Producto <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="nombreProducto"
+                [(ngModel)]="form.nombreProducto"
+                name="nombreProducto"
+                placeholder="Ej: iPhone 15 Pro Max">
+            </div>
+            <div class="mb-3">
+              <label for="enlaceProducto" class="form-label">
+                <i class="fas fa-link me-1"></i>
+                Enlace del Producto <span class="text-danger">*</span>
+              </label>
+              <input
+                type="url"
+                class="form-control"
+                id="enlaceProducto"
+                [(ngModel)]="form.enlaceProducto"
+                name="enlaceProducto"
+                placeholder="https://...">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">
+                <i class="fas fa-images me-1"></i>
+                Imágenes del Producto
+              </label>
+              <input
+                type="file"
+                #inputImagenes
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                multiple
+                class="d-none"
+                (change)="onImagenesSeleccionadas($event)">
+              <div class="image-upload-area" (click)="inputImagenes.click()">
+                <span class="image-upload-text">+ Agregar Imagen</span>
+              </div>
+              @if (imagenesParaSeleccionar.length > 0) {
+                <div class="imagenes-grid mt-3">
+                  @for (url of imagenesParaSeleccionar; track $index) {
+                    <div
+                      class="thumb-wrap"
+                      [class.principal]="(form.imagenPrincipalIndex ?? 0) === $index"
+                      (click)="seleccionarImagenPrincipal($index)">
+                      <img [src]="url" alt="Imagen {{ $index + 1 }}" class="thumb-img">
+                      <button
+                        type="button"
+                        class="btn-eliminar-overlay"
+                        (click)="quitarImagenPorIndice($index, $event)"
+                        title="Eliminar">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                      @if ((form.imagenPrincipalIndex ?? 0) === $index) {
+                        <span class="badge-principal">Principal</span>
+                      }
+                    </div>
+                  }
+                </div>
+                <p class="form-text mt-2 mb-0">Clic en la imagen = principal. Clic en <i class="fas fa-trash"></i> = eliminar.</p>
+              }
+              <p class="form-text">Opcional. JPG, PNG, GIF, WebP. Máx. 5MB por imagen.</p>
+            </div>
+          </div>
+        }
+
+        @if (activeTab === 'vendedor') {
+          <div class="tab-content">
+            <h6 class="tab-section-title">Información del Vendedor</h6>
+
+            <div class="mb-3">
+              <label for="vendedor" class="form-label">
+                <i class="fas fa-store me-1"></i>
+                Vendedor <span class="text-danger">*</span>
+              </label>
+              <select
+                class="form-select"
+                id="vendedor"
+                [ngModel]="selectedVendedorId ?? ''"
+                (ngModelChange)="onVendedorSelect($event)"
+                name="vendedor">
+                <option value="">Selecciona un Vendedor</option>
+                @for (v of vendedores; track v.id) {
+                  <option [value]="v.id">{{ v.nombre }}</option>
+                }
+              </select>
+              @if (vendedores.length === 0) {
+                <p class="form-text small text-muted mb-0">No hay vendedores. Agrégalos en Gestión → Vendedores.</p>
+              }
+            </div>
+            <div class="mb-3">
+              <label for="nombreVendedor" class="form-label">
+                <i class="fas fa-user me-1"></i>
+                Nombre del vendedor <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="nombreVendedor"
+                [(ngModel)]="form.nombreVendedor"
+                name="nombreVendedor"
+                [readonly]="!!selectedVendedor"
+                placeholder="Selecciona un vendedor o escribe manualmente">
+            </div>
+            <div class="mb-3">
+              <label for="contacto" class="form-label">
+                <i class="fas fa-phone me-1"></i>
+                Teléfono / Contacto <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                id="contacto"
+                [(ngModel)]="form.contacto"
+                name="contacto"
+                [readonly]="!!selectedVendedor"
+                [attr.placeholder]="selectedVendedor ? '' : 'Selecciona un vendedor o escribe manualmente'">
+              @if (selectedVendedor) {
+                <p class="form-text small text-muted mb-0">El teléfono viene del vendedor seleccionado y no se puede editar aquí.</p>
+              }
+            </div>
+            <div class="mb-3">
+              <label for="tienda" class="form-label">
+                <i class="fas fa-store me-1"></i>
+                Tienda <span class="text-danger">*</span>
+              </label>
+              <select
+                class="form-select"
+                id="tienda"
+                [(ngModel)]="form.tienda"
+                name="tienda">
+                <option value="">Selecciona una Tienda</option>
+                @for (t of tiendas; track t) {
+                  <option [value]="t">{{ t }}</option>
+                }
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="vendidoPor" class="form-label">
+                <i class="fas fa-user-tag me-1"></i>
+                Vendido por
+              </label>
+              <select
+                class="form-select"
+                id="vendidoPor"
+                [(ngModel)]="form.vendidoPor"
+                name="vendidoPor">
+                <option value="">Selecciona un empleado (opcional)</option>
+                @for (e of empleados; track e.id) {
+                  <option [value]="e.fullName">{{ e.fullName }}</option>
+                }
+              </select>
+            </div>
+          </div>
+        }
+
+        @if (activeTab === 'finanzas') {
+          <div class="tab-content">
+            <h6 class="tab-section-title">Finanzas y Estado</h6>
+            <div class="finanzas-grid">
+              <div class="mb-3">
+                <label for="precioCompra" class="form-label">
+                  <i class="fas fa-shopping-cart me-1"></i>
+                  Precio de Compra <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  class="form-control"
+                  id="precioCompra"
+                  [(ngModel)]="form.precioCompra"
+                  name="precioCompra"
+                  placeholder="0.00">
+              </div>
+              <div class="mb-3">
+                <label for="dineroRembolsado" class="form-label">
+                  <i class="fas fa-undo me-1"></i>
+                  Dinero Rembolsado <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  class="form-control"
+                  id="dineroRembolsado"
+                  [(ngModel)]="form.dineroRembolsado"
+                  name="dineroRembolsado"
+                  placeholder="0.00"
+                  min="0">
+              </div>
+              <div class="mb-3">
+                <label for="precioPagina" class="form-label">
+                  <i class="fas fa-file-invoice-dollar me-1"></i>
+                  Precio Página <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  class="form-control"
+                  id="precioPagina"
+                  [(ngModel)]="form.precioPagina"
+                  name="precioPagina"
+                  placeholder="0.00">
+              </div>
+              <div class="mb-3">
+                <label for="tarjeta" class="form-label">
+                  <i class="fas fa-credit-card me-1"></i>
+                  Tarjeta <span class="text-danger">*</span>
+                </label>
+                <select
+                  class="form-select"
+                  id="tarjeta"
+                  [(ngModel)]="form.tarjeta"
+                  name="tarjeta">
+                  @for (tarj of tarjetas; track tarj) {
+                    <option [value]="tarj">{{ tarj }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="form-label d-block">Estado del Producto</label>
+              <div class="estado-checkboxes">
+                <label class="checkbox-item">
+                  <input type="checkbox" [(ngModel)]="form.resenado" name="resenado">
+                  <span>Reseñado</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" [ngModel]="form.apartado" (ngModelChange)="setEstadoExcluyente('apartado', $event)" name="apartado">
+                  <span>Apartado</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" [ngModel]="form.vendido" (ngModelChange)="setEstadoExcluyente('vendido', $event)" name="vendido">
+                  <span>Vendido</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" [ngModel]="form.regalado" (ngModelChange)="setEstadoExcluyente('regalado', $event)" name="regalado">
+                  <span>Regalado</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" [(ngModel)]="form.conDevolucion" name="conDevolucion">
+                  <span>Con Devolución</span>
+                </label>
+              </div>
+              <div class="porcentaje-devolucion-wrap" [hidden]="!form.conDevolucion">
+                <label for="porcentajeDevolucion" class="form-label">% a devolver</label>
+                <input type="number" id="porcentajeDevolucion" class="form-control" min="0" max="100"
+                  [(ngModel)]="form.porcentajeDevolucion" name="porcentajeDevolucion" placeholder="ej. 80">
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrar()">
+          <i class="fas fa-times me-1"></i>
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" (click)="guardar()" [disabled]="saving">
+          @if (saving) {
+            <span class="btn-spinner-wrap">
+              <app-spinner mode="inline" size="sm" [message]="''"></app-spinner>
+            </span>
+          } @else {
+            <i class="fas fa-save me-1"></i>
+            {{ editId ? 'Actualizar Producto' : 'Agregar Producto' }}
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

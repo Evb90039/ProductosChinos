@@ -1,0 +1,10 @@
+<div class="spinner-wrapper" [class.spinner-overlay]="mode === 'overlay'" [class.spinner-block]="mode === 'block'">
+  <div class="spinner-content">
+    <div class="spinner" [class.spinner-sm]="size === 'sm'" [class.spinner-md]="size === 'md'" [class.spinner-lg]="size === 'lg'">
+      <div class="spinner-ring"></div>
+    </div>
+    @if (message) {
+      <p class="spinner-message">{{ message }}</p>
+    }
+  </div>
+</div>

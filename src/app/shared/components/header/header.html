@@ -1,0 +1,35 @@
+<nav class="navbar navbar-expand-lg navbar-dark header-modern fixed-top">
+  <div class="container-fluid px-4">
+    <!-- Logo y toggle -->
+    <div class="d-flex align-items-center">
+      <button class="navbar-toggler border-0 me-3" type="button" (click)="onToggleSidebar()" [class.active]="isSidebarOpen">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="navbar-brand d-flex align-items-center">
+        <img src="/icono.png" alt="Logo" class="header-logo me-2">
+        <div class="brand-text">
+          <h1 class="brand-title">Productos Chinos</h1>
+          <span class="brand-subtitle">Sistema de Gestión</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Usuario y logout -->
+    <div class="header-user-area d-flex align-items-center gap-2">
+      <div class="user-info d-none d-md-flex">
+        <div class="user-avatar" aria-hidden="true">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="user-details">
+          <span class="user-email" [title]="currentUserEmail">{{ currentUserEmail }}</span>
+          <span class="user-role">Administrador</span>
+        </div>
+      </div>
+      <button type="button" class="btn-logout" (click)="onLogout()" title="Cerrar sesión">
+        <i class="fas fa-right-from-bracket logout-icon" aria-hidden="true"></i>
+        <span class="logout-text">Salir</span>
+      </button>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,215 @@
+@if (vistaPagina$ | async; as vista) {
+  <div class="inversiones-container">
+    <div class="page-header">
+      <div class="header-content">
+        <i class="fas fa-chart-line" style="color: #DAA520; font-size: 2rem; margin-right: 1rem;"></i>
+        <div>
+          <h1 class="page-title">Inversiones</h1>
+          <p class="page-subtitle">Análisis de inversión con productos vendidos</p>
+        </div>
+      </div>
+      <div class="header-actions"></div>
+    </div>
+
+    <div class="content-section">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-box-open" style="color: #2196F3;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ vista.totalProductosVendidos }}</h3>
+            <p class="stat-label">
+              Productos vendidos
+              <span class="stat-tooltip-wrap">
+                <i class="fas fa-info-circle stat-tooltip-icon" aria-hidden="true"></i>
+                <span class="stat-tooltip">Cantidad de productos marcados como vendidos. Cuenta cada ítem vendido una sola vez.</span>
+              </span>
+            </p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-wallet" style="color: #795548;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ formatMoney(vista.totalInvertido) }}</h3>
+            <p class="stat-label">
+              Total invertido
+              <span class="stat-tooltip-wrap">
+                <i class="fas fa-info-circle stat-tooltip-icon" aria-hidden="true"></i>
+                <span class="stat-tooltip">Suma del costo real de todos los productos vendidos (precio de compra menos lo ya rembolsado). Fórmula: Σ (Precio compra − Dinero rembolsado) por cada producto vendido.</span>
+              </span>
+            </p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-hand-holding-usd" style="color: #4CAF50;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ formatMoney(vista.totalIngresos) }}</h3>
+            <p class="stat-label">
+              Mis ingresos (tu parte)
+              <span class="stat-tooltip-wrap">
+                <i class="fas fa-info-circle stat-tooltip-icon" aria-hidden="true"></i>
+                <span class="stat-tooltip">Tu parte del ingreso por ventas: 100% si vendió Enrique o Merali; si no, 50% o según el % de devolución. Fórmula: suma de «Mi ingreso» de cada producto vendido.</span>
+              </span>
+            </p>
+          </div>
+        </div>
+        <div class="stat-card stat-ganancia">
+          <div class="stat-icon">
+            <i class="fas fa-coins" style="color: #DAA520;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ formatMoney(vista.gananciaTotal) }}</h3>
+            <p class="stat-label">
+              Ganancia total
+              <span class="stat-tooltip-wrap">
+                <i class="fas fa-info-circle stat-tooltip-icon" aria-hidden="true"></i>
+                <span class="stat-tooltip">Diferencia entre lo que te queda de ingresos y lo que invertiste. Fórmula: Ganancia total = Mis ingresos (tu parte) − Total invertido.</span>
+              </span>
+            </p>
+          </div>
+        </div>
+        <div class="stat-card stat-rendimiento">
+          <div class="stat-icon">
+            <i class="fas fa-percentage" style="color: #9C27B0;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>
+              @if (vista.porcentajeRendimiento != null) {
+                {{ vista.porcentajeRendimiento | number:'1.0-2' }}%
+              } @else {
+                —
+              }
+            </h3>
+            <p class="stat-label">
+              Rendimiento
+              <span class="stat-tooltip-wrap">
+                <i class="fas fa-info-circle stat-tooltip-icon" aria-hidden="true"></i>
+                <span class="stat-tooltip">Rendimiento global sobre lo invertido. Fórmula: Rendimiento = (Ganancia total ÷ Total invertido) × 100. Indica el % de retorno sobre la inversión total.</span>
+              </span>
+            </p>
+          </div>
+        </div>
+        <div class="stat-card stat-roi-promedio">
+          <div class="stat-icon">
+            <i class="fas fa-chart-pie" style="color: #00BCD4;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>
+              @if (vista.roiPromedio != null) {
+                {{ vista.roiPromedio | number:'1.0-2' }}%
+              } @else {
+                —
+              }
+            </h3>
+            <p class="stat-label">
+              ROI Promedio
+              <span class="stat-tooltip-wrap">
+                <i class="fas fa-info-circle stat-tooltip-icon" aria-hidden="true"></i>
+                <span class="stat-tooltip">Promedio del % de rendimiento de cada producto vendido (solo los que tienen inversión &gt; 0). Fórmula: ROI Promedio = suma del % de rendimiento de cada ítem ÷ cantidad de ítems con rendimiento.</span>
+              </span>
+            </p>
+          </div>
+        </div>
+        <div class="stat-card stat-costo-promedio">
+          <div class="stat-icon">
+            <i class="fas fa-tag" style="color: #607D8B;"></i>
+          </div>
+          <div class="stat-info">
+            <h3>
+              @if (vista.costoPromedioPorArticulo != null) {
+                {{ formatMoney(vista.costoPromedioPorArticulo) }}
+              } @else {
+                —
+              }
+            </h3>
+            <p class="stat-label">
+              Costo promedio por artículo
+              <span class="stat-tooltip-wrap">
+                <i class="fas fa-info-circle stat-tooltip-icon" aria-hidden="true"></i>
+                <span class="stat-tooltip">Costo promedio que representó cada producto vendido. Fórmula: Costo promedio = Total invertido ÷ Productos vendidos.</span>
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-section">
+        <div class="table-header table-header-fixed">
+            <h2>Detalle por producto vendido</h2>
+            <div class="header-toolbar">
+              <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Buscar producto, vendedor..." (input)="filtrarInversiones($event)">
+              </div>
+            </div>
+          </div>
+
+          <div class="table-body-scroll">
+            @if (vista.totalFiltered === 0 && !searchTerm()) {
+              <div class="empty-state">
+                <i class="fas fa-chart-line" style="color: #cbd5e1; font-size: 4rem; margin-bottom: 1rem;"></i>
+                <p>No hay productos vendidos. El análisis se actualiza con las ventas.</p>
+              </div>
+            }
+
+            @if (vista.totalFiltered === 0 && searchTerm()) {
+              <div class="empty-state">
+                <i class="fas fa-search" style="color: #cbd5e1; font-size: 4rem; margin-bottom: 1rem;"></i>
+                <p>No hay resultados para «{{ searchTerm() }}».</p>
+              </div>
+            }
+
+            @if (vista.totalFiltered > 0) {
+              <div class="product-list">
+                <div class="product-list-header">
+                  <span class="col-producto">Producto</span>
+                  <span class="col-vendido-por">Vendido por</span>
+                  <span class="col-inversion">Inversión</span>
+                  <span class="col-ingreso">Mi ingreso</span>
+                  <span class="col-ganancia">Ganancia</span>
+                  <span class="col-rend">% Rend.</span>
+                </div>
+                @for (p of vista.paginated; track p.id ?? $index) {
+                  <div class="product-list-row">
+                    <div class="col-producto">
+                      <strong>{{ p.nombreProducto }}</strong>
+                    </div>
+                    <div class="col-vendido-por">{{ p.vendidoPor }}</div>
+                    <div class="col-inversion">{{ formatMoney(p.inversion) }}</div>
+                    <div class="col-ingreso">{{ formatMoney(p.ingreso) }}</div>
+                    <div class="col-ganancia" [class.ganancia-negativa]="p.ganancia < 0">{{ formatMoney(p.ganancia) }}</div>
+                    <div class="col-rend">
+                      @if (p.porcentajeRendimiento != null) {
+                        {{ p.porcentajeRendimiento | number:'1.0-2' }}%
+                      } @else {
+                        <span class="text-muted">—</span>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+
+      @if (vista.totalFiltered > 0 && vista.totalPages > 1) {
+        <div class="pagination-footer">
+          <button type="button" class="pagination-btn" [disabled]="vista.currentPage <= 1" (click)="setPage(vista.currentPage - 1)" title="Anterior">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <span class="pagination-info">Página {{ vista.currentPage }} de {{ vista.totalPages }} ({{ vista.totalFiltered }} en total)</span>
+          <button type="button" class="pagination-btn" [disabled]="vista.currentPage >= vista.totalPages" (click)="setPage(vista.currentPage + 1)" title="Siguiente">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      }
+      </div>
+    </div>
+  </div>
+} @else {
+  <app-spinner mode="overlay" message="Cargando análisis de inversiones..." size="lg"></app-spinner>
+}
