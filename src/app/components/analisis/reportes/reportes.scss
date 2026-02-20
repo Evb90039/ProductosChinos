@@ -73,6 +73,8 @@
         }
 
         .stat-info {
+          min-width: 0;
+
           h3 {
             font-size: 1.5rem;
             font-weight: 700;
@@ -323,5 +325,174 @@
         }
       }
     }
+  }
+}
+
+/* ——— Móvil: mismo enfoque que Empleados (scroll, carrusel de stats y de reportes) ——— */
+@media (max-width: 991px) {
+  .reportes-container {
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .reportes-container .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .reportes-container .page-header .page-title {
+    font-size: 1.5rem;
+  }
+
+  .reportes-container .page-header .page-subtitle {
+    font-size: 0.85rem;
+  }
+
+  /* Carrusel de estadísticas: deslizar de 1 en 1 */
+  .reportes-container .stats-grid {
+    display: flex !important;
+    grid-template-columns: unset;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.25rem 0.25rem 0.5rem 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .reportes-container .stats-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .reportes-container .stats-grid .stat-card {
+    flex: 0 0 calc(100% - 0.5rem) !important;
+    min-width: calc(100% - 0.5rem) !important;
+    max-width: calc(100% - 0.5rem) !important;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .reportes-container .stats-grid .stat-icon {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    min-height: 42px;
+
+    i {
+      font-size: 1.1rem;
+    }
+  }
+
+  .reportes-container .stats-grid .stat-info h3 {
+    font-size: 1.35rem;
+  }
+
+  .reportes-container .stats-grid .stat-info p {
+    font-size: 0.7rem;
+  }
+
+  .reportes-container .table-section .section-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Carrusel de tarjetas de reporte: 1 por vez, deslizar para ver el siguiente empleado */
+  .reportes-container .reporte-cards {
+    display: flex !important;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0.75rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.25rem 0.25rem 0.5rem 0;
+    margin-top: 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .reportes-container .reporte-cards::-webkit-scrollbar {
+    display: none;
+  }
+
+  .reportes-container .reporte-card {
+    flex: 0 0 calc(100% - 0.5rem) !important;
+    min-width: calc(100% - 0.5rem) !important;
+    max-width: calc(100% - 0.5rem) !important;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    margin-bottom: 0;
+  }
+
+  .reportes-container .reporte-card-header {
+    padding: 1rem;
+  }
+
+  .reportes-container .reporte-card-body {
+    padding: 1rem;
+  }
+
+  .reportes-container .reporte-card .empleado-avatar {
+    width: 44px;
+    height: 44px;
+    font-size: 0.95rem;
+  }
+
+  .reportes-container .reporte-card .empleado-datos {
+    min-width: 0;
+  }
+
+  .reportes-container .reporte-card .empleado-nombre,
+  .reportes-container .reporte-card .reporte-card-row {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .reportes-container .page-header .page-title {
+    font-size: 1.35rem;
+  }
+
+  .reportes-container .stats-grid .stat-card {
+    padding: 0.5rem 0.6rem;
+  }
+
+  .reportes-container .stats-grid .stat-icon {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+
+    i {
+      font-size: 0.95rem;
+    }
+  }
+
+  .reportes-container .stats-grid .stat-info h3 {
+    font-size: 1.15rem;
+  }
+
+  .reportes-container .stats-grid .stat-info p {
+    font-size: 0.65rem;
   }
 }
