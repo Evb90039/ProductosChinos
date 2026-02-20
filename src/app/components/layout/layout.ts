@@ -1,9 +1,12 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { HeaderComponent } from '../../shared/components/header/header';
 import { ProductosService } from '../../services/productos.service';
+
+/** Ancho a partir del cual se considera "desktop" (sidebar visible por defecto). Debe coincidir con el breakpoint del sidebar en layout.scss (992px). */
+const SIDEBAR_DESKTOP_BREAKPOINT = 992;
 
 @Component({
   selector: 'app-layout',
@@ -11,8 +14,9 @@ import { ProductosService } from '../../services/productos.service';
   templateUrl: './layout.html',
   styleUrl: './layout.scss',
 })
-export class LayoutComponent {
-  isSidebarOpen = true; // Sidebar siempre abierto
+export class LayoutComponent implements OnInit {
+  /** En móvil empieza cerrado; en desktop se abre en ngOnInit. */
+  isSidebarOpen = false;
   currentUserEmail = '';
   isGestionCollapsed = false; // Control del colapso de Gestión
   isAnalisisCollapsed = true; // Control del colapso de Análisis
@@ -50,6 +54,13 @@ export class LayoutComponent {
     });
   }
 
+  /** En desktop abre el sidebar por defecto; en móvil lo deja cerrado. */
+  ngOnInit(): void {
+    if (typeof window !== 'undefined' && window.innerWidth >= SIDEBAR_DESKTOP_BREAKPOINT) {
+      this.isSidebarOpen = true;
+    }
+  }
+
   toggleSidebar(): void {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
@@ -74,8 +85,9 @@ export class LayoutComponent {
 
   navigateTo(route: string): void {
     this.router.navigate([route]);
-    // NO cerrar el sidebar al navegar - mantenerlo abierto
-    if (!this.isSidebarOpen) {
+    if (typeof window !== 'undefined' && window.innerWidth < SIDEBAR_DESKTOP_BREAKPOINT) {
+      this.isSidebarOpen = false; // En móvil cerrar el sidebar al elegir una opción
+    } else if (!this.isSidebarOpen) {
       this.isSidebarOpen = true;
     }
   }
