@@ -103,7 +103,19 @@
 
         .search-box {
           position: relative;
-          i { position: absolute; left: 1rem; color: #94a3b8; }
+          display: flex;
+          align-items: center;
+
+          i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 0.95rem;
+            pointer-events: none;
+          }
+
           input {
             padding: 0.75rem 1rem 0.75rem 3rem;
             border: 2px solid #e2e8f0;
@@ -237,5 +249,183 @@
         }
       }
     }
+  }
+}
+
+/* ——— Móvil: mismo enfoque que Productos (cabecera en columna, scroll, carrusel 2 en 2) ——— */
+@media (max-width: 991px) {
+  .vendedor-container {
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .vendedor-container .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .vendedor-container .page-header .header-actions .btn-primary {
+    width: 100%;
+    justify-content: center;
+    padding: 0.875rem 1rem;
+  }
+
+  .vendedor-container .page-header .page-title {
+    font-size: 1.5rem;
+  }
+
+  .vendedor-container .page-header .page-subtitle {
+    font-size: 0.9rem;
+  }
+
+  /* Estadística compacta en móvil */
+  .vendedor-container .stats-grid {
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .vendedor-container .stats-grid .stat-card {
+    padding: 0.75rem 1rem;
+  }
+
+  .vendedor-container .stats-grid .stat-icon i {
+    font-size: 1.25rem;
+  }
+
+  .vendedor-container .stats-grid .stat-info h3 {
+    font-size: 1.5rem;
+  }
+
+  .vendedor-container .stats-grid .stat-info p {
+    font-size: 0.8rem;
+  }
+
+  /* Título y búsqueda en columna; búsqueda al 100% para que no se corte */
+  .vendedor-container .table-section .table-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .vendedor-container .table-section .table-header .search-box {
+    width: 100%;
+  }
+
+  .vendedor-container .table-section .table-header .search-box i {
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .vendedor-container .table-section .table-header .search-box input {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Carrusel de vendedores: 1 tarjeta a la vez (uno por uno), deslizar para ver el siguiente */
+  .vendedor-container .vendedores-grid {
+    display: flex !important;
+    grid-template-columns: unset;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0.75rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.25rem 0.25rem 0.5rem 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .vendedor-container .vendedores-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .vendedor-container .vendedores-grid .vendedor-card {
+    flex: 0 0 calc(100% - 0.5rem) !important;
+    min-width: calc(100% - 0.5rem) !important;
+    max-width: calc(100% - 0.5rem) !important;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+
+  /* En móvil: cabecera en columna; acciones flotantes para que nombre tenga todo el ancho y no se parta letra a letra */
+  .vendedor-container .vendedores-grid .vendedor-card .vendedor-card-header {
+    position: relative;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem 1rem 0;
+  }
+
+  .vendedor-container .vendedores-grid .vendedor-card .vendedor-actions {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+
+  .vendedor-container .vendedores-grid .vendedor-card .vendedor-avatar-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    min-width: 0;
+    padding-right: 4rem;
+  }
+
+  .vendedor-container .vendedores-grid .vendedor-card .vendedor-header-text {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .vendedor-container .vendedores-grid .vendedor-card .vendedor-name {
+    font-size: 1rem;
+    line-height: 1.35;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    min-width: 0;
+  }
+
+  .vendedor-container .vendedores-grid .vendedor-card .detail-value {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+    min-width: 0;
+  }
+
+  .vendedor-container .vendedores-grid .vendedor-card .vendedor-avatar {
+    width: 44px;
+    height: 44px;
+    font-size: 0.95rem;
+  }
+
+  .vendedor-container .vendedores-grid .vendedor-card .vendedor-card-details {
+    padding: 0.75rem 1rem 1rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .vendedor-container .page-header .page-title {
+    font-size: 1.35rem;
+  }
+
+  .vendedor-container .stats-grid .stat-card {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .vendedor-container .stats-grid .stat-info h3 {
+    font-size: 1.25rem;
   }
 }

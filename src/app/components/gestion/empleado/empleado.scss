@@ -142,7 +142,11 @@
           i {
             position: absolute;
             left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
             color: #94a3b8;
+            font-size: 0.95rem;
+            pointer-events: none;
           }
 
           input {
@@ -323,5 +327,232 @@
         }
       }
     }
+  }
+}
+
+/* ——— Móvil: mismo enfoque que Vendedores (cabecera en columna, scroll, carrusel 1 por 1, icono búsqueda centrado) ——— */
+@media (max-width: 991px) {
+  .empleado-container {
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .empleado-container .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .empleado-container .page-header .header-actions .btn-primary {
+    width: 100%;
+    justify-content: center;
+    padding: 0.875rem 1rem;
+  }
+
+  .empleado-container .page-header .page-title {
+    font-size: 1.5rem;
+  }
+
+  .empleado-container .page-header .page-subtitle {
+    font-size: 0.9rem;
+  }
+
+  /* Carrusel de estadísticas: misma funcionalidad que el carrusel de empleados (deslizar de 1 en 1) */
+  .empleado-container .stats-grid {
+    display: flex !important;
+    grid-template-columns: unset;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.25rem 0.25rem 0.5rem 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .empleado-container .stats-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .empleado-container .stats-grid .stat-card {
+    flex: 0 0 calc(100% - 0.5rem) !important;
+    min-width: calc(100% - 0.5rem) !important;
+    max-width: calc(100% - 0.5rem) !important;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .empleado-container .stats-grid .stat-icon {
+    width: 42px;
+    height: 42px;
+
+    i {
+      font-size: 1.1rem;
+    }
+  }
+
+  .empleado-container .stats-grid .stat-info h3 {
+    font-size: 1.35rem;
+  }
+
+  .empleado-container .stats-grid .stat-info p {
+    font-size: 0.75rem;
+  }
+
+  /* Título y búsqueda en columna; búsqueda al 100%; icono centrado */
+  .empleado-container .table-section .table-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .empleado-container .table-section .table-header .search-box {
+    width: 100%;
+  }
+
+  .empleado-container .table-section .table-header .search-box i {
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .empleado-container .table-section .table-header .search-box input {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Carrusel de empleados: 1 tarjeta a la vez (uno por uno), deslizar para ver el siguiente */
+  .empleado-container .empleados-grid {
+    display: flex !important;
+    grid-template-columns: unset;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0.75rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.25rem 0.25rem 0.5rem 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .empleado-container .empleados-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .empleado-container .empleados-grid .empleado-card {
+    flex: 0 0 calc(100% - 0.5rem) !important;
+    min-width: calc(100% - 0.5rem) !important;
+    max-width: calc(100% - 0.5rem) !important;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+
+  /* Cabecera de tarjeta en columna; acciones flotantes; nombre con ancho completo para que no se parta */
+  .empleado-container .empleados-grid .empleado-card .empleado-card-header {
+    position: relative;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem 1rem 0;
+  }
+
+  .empleado-container .empleados-grid .empleado-card .empleado-actions {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+
+  .empleado-container .empleados-grid .empleado-card .empleado-avatar-wrap {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    padding-right: 4rem;
+  }
+
+  .empleado-container .empleados-grid .empleado-card .empleado-header-text {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .empleado-container .empleados-grid .empleado-card .empleado-name {
+    font-size: 1rem;
+    line-height: 1.35;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    min-width: 0;
+  }
+
+  .empleado-container .empleados-grid .empleado-card .detail-value {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+    min-width: 0;
+  }
+
+  .empleado-container .empleados-grid .empleado-card .empleado-avatar {
+    width: 44px;
+    height: 44px;
+    font-size: 0.95rem;
+  }
+
+  .empleado-container .empleados-grid .empleado-card .empleado-card-details {
+    padding: 0.75rem 1rem 1rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .empleado-container .page-header .page-title {
+    font-size: 1.35rem;
+  }
+
+  /* Un solo bloque de stats: aún más compacto en celular */
+  .empleado-container .stats-grid {
+    margin-bottom: 0.75rem;
+    padding: 0.4rem 0;
+  }
+
+  .empleado-container .stats-grid .stat-card {
+    padding: 0.35rem 0.4rem;
+  }
+
+  .empleado-container .stats-grid .stat-icon {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+
+    i {
+      font-size: 0.8rem;
+    }
+  }
+
+  .empleado-container .stats-grid .stat-info h3 {
+    font-size: 1rem;
+  }
+
+  .empleado-container .stats-grid .stat-info p {
+    font-size: 0.55rem;
   }
 }
