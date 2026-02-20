@@ -1,0 +1,12 @@
+# Despliegue de ProductosChinos (Angular) en Netlify
+# https://docs.netlify.com/configure-builds/file-based-configuration/
+
+[build]
+  command = "npm run build:netlify"
+  publish = "dist/ProductosChinos/browser"
+
+# Redirección SPA: todas las rutas al index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
