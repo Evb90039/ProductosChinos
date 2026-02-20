@@ -253,16 +253,21 @@
         background: white;
         border: 1px solid #e2e8f0;
         border-radius: 1rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        min-width: 0;
       }
 
       .product-list-header,
       .product-list-row {
         display: grid;
-        grid-template-columns: 70px 1fr 130px 95px 95px 95px 95px 110px 100px 90px;
+        /* Mínimos para que no se corte el texto; Producto y Vendedor pueden crecer */
+        grid-template-columns: 70px minmax(180px, 2fr) minmax(150px, 180px) minmax(90px, 100px) minmax(90px, 100px) minmax(90px, 100px) minmax(90px, 100px) minmax(100px, 120px) minmax(85px, 100px) 90px;
         gap: 0.75rem 1rem;
         align-items: center;
         padding: 0.75rem 1rem;
         min-height: 56px;
+        min-width: min-content;
       }
 
       .product-list-header {
@@ -276,6 +281,14 @@
         letter-spacing: 0.05em;
         color: #64748b;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        white-space: nowrap;
+      }
+
+      .product-list-header .col-imagen,
+      .product-list-header .col-nombre,
+      .product-list-header .col-vendedor {
+        white-space: normal;
+        word-break: break-word;
       }
 
       .product-list-row {
@@ -286,14 +299,28 @@
           background: #fafafa;
         }
 
-        .col-nombre strong {
-          color: #2c3e50;
+        .col-nombre {
+          min-width: 0;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+          word-break: break-word;
+          white-space: normal;
+          line-height: 1.35;
+
+          strong {
+            color: #2c3e50;
+          }
         }
 
         .col-vendedor {
           display: flex;
           flex-direction: column;
           gap: 0.15rem;
+          min-width: 0;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+          word-break: break-word;
+          white-space: normal;
 
           .text-muted {
             font-size: 0.75rem;
@@ -473,8 +500,140 @@
   }
 }
 
+/* ——— Carrusel de estadísticas: 2 tarjetas a la vez (móvil y tablet) ——— */
+@media (max-width: 991px) {
+  .productos-container .stats-grid {
+    display: flex !important;
+    grid-template-columns: unset;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.25rem 0.25rem 0.5rem 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    box-sizing: border-box;
+  }
+
+  .productos-container .stats-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .productos-container .stats-grid .stat-card {
+    flex: 0 0 calc(50% - 0.25rem) !important;
+    min-width: calc(50% - 0.25rem) !important;
+    max-width: calc(50% - 0.25rem) !important;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.6rem;
+    border-radius: 0.6rem;
+    min-height: 56px;
+    box-sizing: border-box;
+  }
+
+  .productos-container .stats-grid .stat-card:last-child:nth-child(odd) {
+    flex: 0 0 calc(100% - 0.5rem) !important;
+    min-width: calc(100% - 0.5rem) !important;
+    max-width: calc(100% - 0.5rem) !important;
+  }
+
+  .productos-container .stats-grid .stat-icon {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  .productos-container .stats-grid .stat-icon i {
+    font-size: 0.95rem;
+  }
+
+  .productos-container .stats-grid .stat-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .productos-container .stats-grid .stat-info p {
+    font-size: 0.75rem;
+  }
+
+  .productos-container .stats-grid .stat-info h3 {
+    font-size: 1.1rem;
+  }
+}
+
+/* ——— Móvil: UX/UI mejorado ——— */
 @media (max-width: 767px) {
   .productos-container {
-    height: calc(100vh - 56px - 2rem);
+    /* Dejar de usar altura fija: la página entera hace scroll y se llega a artículos y paginación */
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .productos-container .content-section {
+    flex: none;
+    min-height: auto;
+  }
+
+  .productos-container .table-section {
+    flex: none;
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .productos-container .table-body-scroll {
+    flex: none;
+    min-height: auto;
+    overflow: visible;
+    -webkit-overflow-scrolling: auto;
+  }
+
+  /* Header: título y botón en columna para que "Nuevo Producto" no se corte */
+  .productos-container .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .productos-container .page-header .header-content {
+    order: 1;
+  }
+
+  .productos-container .page-header .header-actions {
+    order: 2;
+    width: 100%;
+  }
+
+  .productos-container .page-header .header-actions .btn-primary {
+    width: 100%;
+    justify-content: center;
+    padding: 0.875rem 1rem;
+  }
+
+  .productos-container .page-header .page-title {
+    font-size: 1.5rem;
+  }
+
+  .productos-container .page-header .page-subtitle {
+    font-size: 0.9rem;
+  }
+
+  /* Paginación: más espacio inferior para no quedar bajo la barra del navegador */
+  .productos-container .pagination-footer {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    margin-bottom: env(safe-area-inset-bottom, 0px);
   }
 }
