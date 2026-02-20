@@ -5,6 +5,16 @@
   height: 70px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 
+  /* En móvil y desktop: una sola fila, Salir siempre a la derecha en la barra */
+  .container-fluid {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    min-height: 100%;
+  }
+
   .navbar-toggler {
     border-color: rgba(255, 255, 255, 0.2) !important;
     padding: 0.5rem;
@@ -69,6 +79,13 @@
 
   .header-user-area {
     gap: 0.75rem;
+    flex-shrink: 0; /* Salir no se comprime ni baja de línea */
+  }
+
+  /* Zona izquierda puede reducirse en móvil para no empujar el botón */
+  .d-flex.align-items-center:first-of-type {
+    min-width: 0;
+    flex: 1 1 auto;
   }
 
   .user-info {
@@ -170,19 +187,37 @@
 @media (max-width: 767px) {
   .header-modern {
     height: 60px;
-    
+
+    .container-fluid {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+
     .header-logo {
       max-width: 40px;
       max-height: 40px;
     }
-    
+
     .brand-text {
       .brand-title {
-        font-size: 1.25rem;
+        font-size: 1.1rem;
       }
-      
+
       .brand-subtitle {
         display: none;
+      }
+    }
+
+    /* En móvil: solo icono en Salir para que quepa en la barra */
+    .btn-logout {
+      padding: 0.5rem 0.65rem;
+
+      .logout-text {
+        display: none;
+      }
+
+      .logout-icon {
+        margin: 0;
       }
     }
   }
