@@ -377,6 +377,35 @@
   background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(218, 165, 32, 0.1)) !important;
 }
 
+/* Backdrop: solo en móvil; tocar fuera del sidebar lo cierra */
+.sidebar-backdrop {
+  display: none;
+}
+
+@media (max-width: 991px) {
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    top: 70px; /* Debajo del header fijo */
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1025;
+    cursor: pointer;
+    animation: fadeIn 0.2s ease;
+  }
+}
+
+@media (max-width: 767px) {
+  .sidebar-backdrop {
+    top: 60px; /* Header más bajo en móvil */
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 @media (min-width: 992px) {
   .sidebar-modern {
     position: fixed;

@@ -2,6 +2,17 @@
   <!-- Header Component -->
   <app-header [currentUserEmail]="currentUserEmail" [isSidebarOpen]="isSidebarOpen" (logout)="logout()" (toggleSidebar)="toggleSidebar()"></app-header>
 
+  <!-- Backdrop: en móvil, tocar fuera del sidebar lo cierra -->
+  @if (isSidebarOpen) {
+    <div class="sidebar-backdrop" 
+         role="button" 
+         tabindex="0" 
+         (click)="toggleSidebar()" 
+         (keydown.enter)="toggleSidebar()"
+         (keydown.space)="toggleSidebar(); $event.preventDefault()"
+         aria-label="Cerrar menú"></div>
+  }
+
   <!-- Sidebar Offcanvas -->
   <div class="offcanvas offcanvas-start sidebar-modern" 
        tabindex="-1" 
