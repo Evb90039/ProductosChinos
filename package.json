@@ -6,7 +6,7 @@
     "start": "ng serve",
     "prestart": "node scripts/generate-env.js",
     "build": "ng build",
-    "build:netlify": "node scripts/generate-env.prod.js && ng build --configuration=netlify",
+    "build:netlify": "node scripts/generate-env.prod.js && ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "sonar": "node scripts/run-sonar.js",
