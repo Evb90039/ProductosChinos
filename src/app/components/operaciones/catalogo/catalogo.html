@@ -1,83 +1,143 @@
 <div class="catalogo-store">
-  <!-- Barra superior tipo marketplace -->
+  <!-- Header tipo Mercado Libre: logo + búsqueda -->
   <header class="store-header">
     <div class="store-header-inner">
-      <a class="store-logo" href="/catalogo">
-        <i class="fas fa-box store-logo-icon" aria-hidden="true"></i>
-        <span class="store-logo-text">Productos Chinos</span>
+      <a class="store-brand" href="/catalogo" aria-label="Productos Chinos - Inicio">
+        <img src="/icono.png" alt="" class="store-logo-img" width="44" height="44">
+        <span class="store-brand-name">Productos Chinos</span>
       </a>
-      <p class="store-tagline">Catálogo en línea</p>
+      <div class="store-header-search">
+        <label for="catalogoSearch" class="visually-hidden">Buscar productos</label>
+        <input
+          type="search"
+          id="catalogoSearch"
+          class="store-search-input"
+          placeholder="Buscar productos, marcas y más..."
+          [ngModel]="searchTerm()"
+          (ngModelChange)="searchTerm.set($event)"
+          autocomplete="off">
+        <button type="button" class="store-search-btn" aria-label="Buscar">
+          <i class="fas fa-search" aria-hidden="true"></i>
+        </button>
+      </div>
+      <span class="store-tagline">Catálogo en línea</span>
     </div>
   </header>
 
-  <!-- Contenido principal -->
+  <!-- Contenido principal: en desktop sidebar lateral + grid; en móvil botón + dropdown -->
   <main class="store-main">
-    <div class="store-container">
-      <section class="store-hero">
-        <h1 class="store-hero-title">Catálogo</h1>
-        <p class="store-hero-subtitle">Productos disponibles — precios en página</p>
-      </section>
-
+    <div class="store-container store-layout">
       @if (vistaCatalogo$ | async; as vista) {
         @if (vista.categorias.length > 1) {
-          <nav class="store-categorias" aria-label="Categorías">
-            <ul class="store-categorias-list">
-              @for (c of vista.categorias; track c.value) {
-                <li>
+          <!-- Filtro lateral: solo visible en PC/tablet -->
+          <aside class="store-sidebar" aria-label="Filtrar por categoría">
+            <div class="store-sidebar-inner">
+              <h2 class="store-sidebar-title">Categorías</h2>
+              <nav class="store-sidebar-nav">
+                @for (c of vista.categorias; track c.value) {
                   <button
                     type="button"
-                    class="store-categoria-btn"
+                    class="store-sidebar-option"
                     [class.active]="selectedCategoria() === c.value"
                     (click)="setCategoria(c.value)">
                     {{ c.label }}
                   </button>
-                </li>
-              }
-            </ul>
-          </nav>
-        }
-        @if (vista.productos.length === 0) {
-          <div class="store-empty">
-            <div class="store-empty-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-              </svg>
+                }
+              </nav>
             </div>
-            <h2 class="store-empty-title">No hay productos en catálogo</h2>
-            <p class="store-empty-text">{{ selectedCategoria() ? 'No hay productos en esta categoría.' : 'Vuelve pronto para ver novedades.' }}</p>
-          </div>
-        } @else {
-          <p class="store-results">{{ vista.productos.length }} producto{{ vista.productos.length !== 1 ? 's' : '' }} disponible{{ vista.productos.length !== 1 ? 's' : '' }}</p>
-          <div class="store-grid">
-            @for (p of vista.productos; track p.id) {
-              <article class="product-card">
-                <a class="product-card-link" href="#" (click)="$event.preventDefault()">
-                  <div class="product-card-image-wrap">
-                    @if (imagenPrincipal(p); as src) {
-                      <img class="product-card-image" [src]="src" [alt]="p.nombreProducto || 'Producto'" loading="lazy">
-                    } @else {
-                      <div class="product-card-placeholder">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-                      </div>
-                    }
-                  </div>
-                  <div class="product-card-body">
-                    <span class="product-card-badge" [class.product-card-badge-devolucion]="p.conDevolucion">{{ etiquetaGanancia(p) }}</span>
-                    <h2 class="product-card-title">{{ p.nombreProducto || 'Sin nombre' }}</h2>
-                    <p class="product-card-price">{{ formatPrecio(p.precioPagina) }}</p>
-                  </div>
-                </a>
-              </article>
-            }
-          </div>
+          </aside>
         }
+        <div class="store-content">
+          @if (vista.categorias.length > 1) {
+            <!-- Botón filtro + limpiar: solo visible en móvil -->
+            <div class="store-filter-wrap store-filter-mobile">
+              <div class="store-filter-row">
+                <button
+                  type="button"
+                  class="store-filter-btn"
+                  (click)="toggleCategoriasDropdown()"
+                  [attr.aria-expanded]="showCategoriasDropdown()"
+                  aria-haspopup="true"
+                  aria-label="Filtrar por categoría">
+                  <i class="fas fa-layer-group store-filter-icon" aria-hidden="true"></i>
+                  <span class="store-filter-label">{{ categoriasButtonLabel(vista) }}</span>
+                  <i class="fas fa-chevron-down store-filter-chevron" [class.is-open]="showCategoriasDropdown()" aria-hidden="true"></i>
+                </button>
+                @if (selectedCategoria()) {
+                  <button type="button" class="store-filter-clear" (click)="setCategoriaAndClose('')" aria-label="Limpiar filtro">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                    <span>Limpiar filtro</span>
+                  </button>
+                }
+              </div>
+              @if (showCategoriasDropdown()) {
+                <div class="store-filter-dropdown" role="listbox">
+                  @if (selectedCategoria()) {
+                    <button type="button" class="store-filter-option store-filter-clear-option" (click)="setCategoriaAndClose('')">
+                      <i class="fas fa-times-circle" aria-hidden="true"></i>
+                      Limpiar filtro
+                    </button>
+                  }
+                  @for (c of vista.categorias; track c.value) {
+                    <button
+                      type="button"
+                      class="store-filter-option"
+                      [class.active]="selectedCategoria() === c.value"
+                      (click)="setCategoriaAndClose(c.value)"
+                      role="option">
+                      {{ c.label }}
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          }
+          @if (vista.productos.length === 0) {
+            <div class="store-empty">
+              <div class="store-empty-icon">
+                <i class="fas fa-search" aria-hidden="true"></i>
+              </div>
+              <h2 class="store-empty-title">No hay productos</h2>
+              <p class="store-empty-text">{{ searchTerm() ? 'No encontramos resultados para tu búsqueda. Probá con otros términos.' : (selectedCategoria() ? 'No hay productos en esta categoría.' : 'Pronto tendremos novedades.') }}</p>
+            </div>
+          } @else {
+            <div class="store-results-bar">
+              <p class="store-results-count">{{ vista.productos.length }} producto{{ vista.productos.length !== 1 ? 's' : '' }}</p>
+            </div>
+            <div class="store-grid">
+              @for (p of vista.productos; track p.id) {
+                <article class="product-card">
+                  <a class="product-card-link" href="#" (click)="$event.preventDefault()">
+                    <div class="product-card-image-wrap">
+                      @if (imagenPrincipal(p); as src) {
+                        <img class="product-card-image" [src]="src" [alt]="p.nombreProducto || 'Producto'" loading="lazy">
+                      } @else {
+                        <div class="product-card-placeholder">
+                          <i class="fas fa-image" aria-hidden="true"></i>
+                        </div>
+                      }
+                      <span class="product-card-badge" [class.badge-devolucion]="p.conDevolucion">{{ etiquetaGanancia(p) }}</span>
+                    </div>
+                    <div class="product-card-body">
+                      <h2 class="product-card-title">{{ p.nombreProducto || 'Sin nombre' }}</h2>
+                      <p class="product-card-price">{{ formatPrecio(p.precioPagina) }}</p>
+                    </div>
+                  </a>
+                </article>
+              }
+            </div>
+          }
+        </div>
       }
     </div>
   </main>
 
   <footer class="store-footer">
     <div class="store-container">
-      <p class="store-footer-text">© Productos Chinos — Catálogo</p>
+      <div class="store-footer-inner">
+        <img src="/icono.png" alt="" class="store-footer-logo" width="32" height="32">
+        <p class="store-footer-text">© Productos Chinos — Catálogo en línea</p>
+      </div>
     </div>
   </footer>
 </div>

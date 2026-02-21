@@ -1,161 +1,436 @@
-// --- Catálogo público — Estilo marketplace (Mercado Libre / Amazon) ---
+// --- Catálogo público — Diseño nivel Mercado Libre / Amazon ---
 
-$store-header-bg: #ffe600;
-$store-header-text: #333;
-$store-accent: #3483fa;
-$store-price: #00a650;
-$store-bg: #ededed;
-$store-card-bg: #fff;
-$store-text: #333;
-$store-text-muted: #666;
-$store-border: #e6e6e6;
-$store-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-$store-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.12);
-$store-radius: 8px;
-$store-radius-card: 8px;
+$header-bg: #ffe600;
+$header-text: #333;
+$accent: #3483fa;
+$price: #00a650;
+$bg: #f5f5f5;
+$card-bg: #fff;
+$text: #333;
+$text-muted: #666;
+$border: #e6e6e6;
+$radius: 8px;
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
 .catalogo-store {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: $store-bg;
+  background: $bg;
 }
 
 .store-container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 20px;
 }
 
-// ----- Header (barra amarilla tipo ML) -----
+// Layout: en desktop sidebar + contenido; en móvil solo contenido
+.store-layout {
+  @media (min-width: 768px) {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    max-width: 1280px;
+  }
+}
+
+// ========== Header (estilo ML: amarillo + logo + búsqueda) ==========
 .store-header {
-  background: $store-header-bg;
-  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1);
+  background: $header-bg;
+  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 0;
   z-index: 100;
 }
 
 .store-header-inner {
-  max-width: 1200px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 12px 16px;
+  padding: 10px 20px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 24px;
   flex-wrap: wrap;
-  gap: 8px;
 }
 
-.store-logo {
-  display: inline-flex;
+.store-brand {
+  display: flex;
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  color: $store-header-text;
-  font-weight: 700;
-  font-size: 1.35rem;
-  letter-spacing: -0.02em;
+  color: $header-text;
+  flex-shrink: 0;
 
   &:hover {
-    color: $store-header-text;
-    opacity: 0.9;
+    color: $header-text;
+    opacity: 0.92;
   }
 }
 
-.store-logo-icon {
-  font-size: 1.5rem;
-  color: #333;
+.store-logo-img {
+  display: block;
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
 }
 
-.store-logo-text {
-  white-space: nowrap;
+.store-brand-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.store-header-search {
+  flex: 1;
+  min-width: 0;
+  max-width: 520px;
+  display: flex;
+  align-items: stretch;
+  background: $card-bg;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.store-search-input {
+  flex: 1;
+  padding: 12px 18px;
+  font-size: 1rem;
+  border: none;
+  background: transparent;
+
+  &::placeholder {
+    color: #999;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.store-search-btn {
+  padding: 0 16px;
+  background: #e6e6e6;
+  border: none;
+  color: $text-muted;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover {
+    background: #d9d9d9;
+    color: $text;
+  }
+
+  i {
+    font-size: 1rem;
+  }
 }
 
 .store-tagline {
   margin: 0;
-  font-size: 0.85rem;
-  color: $store-text-muted;
-  font-weight: 400;
+  font-size: 0.8rem;
+  color: $text-muted;
+  white-space: nowrap;
 }
 
-// ----- Main -----
+@media (max-width: 767px) {
+  .store-header-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .store-brand {
+    justify-content: center;
+  }
+
+  .store-header-search {
+    max-width: none;
+  }
+
+  .store-tagline {
+    text-align: center;
+  }
+}
+
+// ========== Sidebar lateral (solo PC/tablet) ==========
+.store-sidebar {
+  display: none;
+
+  @media (min-width: 768px) {
+    display: block;
+    flex-shrink: 0;
+    width: 240px;
+    position: sticky;
+    top: 80px;
+  }
+}
+
+.store-sidebar-inner {
+  background: $card-bg;
+  border-radius: $radius;
+  border: 1px solid $border;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  padding: 16px;
+}
+
+.store-sidebar-title {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: $text;
+  padding-bottom: 10px;
+  border-bottom: 1px solid $border;
+}
+
+.store-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.store-sidebar-option {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  text-align: left;
+  color: $text;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: rgba(52, 131, 250, 0.08);
+  }
+
+  &.active {
+    background: rgba(52, 131, 250, 0.12);
+    color: $accent;
+    font-weight: 600;
+  }
+}
+
+.store-content {
+  flex: 1;
+  min-width: 0;
+}
+
+// ========== Botón y dropdown de categorías (solo móvil) ==========
+.store-filter-wrap {
+  position: relative;
+  margin-bottom: 20px;
+
+  @media (min-width: 768px) {
+    &.store-filter-mobile {
+      display: none;
+    }
+  }
+}
+
+.store-filter-row {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  width: 100%;
+}
+
+.store-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: $text;
+  background: $card-bg;
+  border: 2px solid $border;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+
+  &:hover {
+    border-color: $accent;
+    background: rgba(52, 131, 250, 0.04);
+    box-shadow: 0 2px 8px rgba(52, 131, 250, 0.18);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: $accent;
+    box-shadow: 0 0 0 3px rgba(52, 131, 250, 0.25);
+  }
+}
+
+.store-filter-icon {
+  color: $accent;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.store-filter-label {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.store-filter-chevron {
+  font-size: 0.7rem;
+  color: $text-muted;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+
+  &.is-open {
+    transform: rotate(180deg);
+    color: $accent;
+  }
+}
+
+// Botón "Limpiar filtro" junto al de categorías (solo móvil, cuando hay filtro activo)
+.store-filter-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $text-muted;
+  background: transparent;
+  border: 1px solid $border;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  flex-shrink: 0;
+  min-height: 48px;
+
+  i {
+    font-size: 0.9rem;
+  }
+
+  &:hover {
+    color: #c62828;
+    border-color: rgba(198, 40, 40, 0.4);
+    background: rgba(198, 40, 40, 0.06);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: #c62828;
+    box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.2);
+  }
+}
+
+.store-filter-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 8px;
+  min-width: 260px;
+  max-height: 320px;
+  overflow-y: auto;
+  background: $card-bg;
+  border: 1px solid $border;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: 8px;
+  z-index: 50;
+}
+
+.store-filter-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  text-align: left;
+  color: $text;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: rgba(52, 131, 250, 0.08);
+  }
+
+  &.active {
+    background: rgba(52, 131, 250, 0.12);
+    color: $accent;
+    font-weight: 600;
+  }
+}
+
+// Opción "Limpiar filtro" dentro del dropdown
+.store-filter-clear-option {
+  color: $text-muted;
+  border-bottom: 1px solid $border;
+  margin-bottom: 4px;
+  padding-bottom: 12px;
+
+  i {
+    font-size: 1rem;
+    color: #c62828;
+  }
+
+  &:hover {
+    background: rgba(198, 40, 40, 0.06);
+    color: #c62828;
+  }
+}
+
+// ========== Main ==========
 .store-main {
   flex: 1;
   padding: 24px 0 48px;
 }
 
-.store-hero {
-  margin-bottom: 24px;
-}
-
-.store-hero-title {
-  margin: 0 0 4px;
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: $store-text;
-  letter-spacing: -0.02em;
-}
-
-.store-hero-subtitle {
-  margin: 0;
-  font-size: 0.95rem;
-  color: $store-text-muted;
-}
-
-// ----- Filtro por categorías (estilo ML/Amazon) -----
-.store-categorias {
+.store-results-bar {
   margin-bottom: 20px;
 }
 
-.store-categorias-list {
-  list-style: none;
+.store-results-count {
   margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  font-size: 0.95rem;
+  color: $text-muted;
 }
 
-.store-categoria-btn {
-  padding: 8px 16px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: $store-text-muted;
-  background: $store-card-bg;
-  border: 1px solid $store-border;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    color: $store-accent;
-    border-color: $store-accent;
-    background: #f0f7ff;
-  }
-
-  &.active {
-    color: #fff;
-    background: $store-accent;
-    border-color: $store-accent;
-  }
-}
-
-.store-results {
-  margin: 0 0 16px;
-  font-size: 0.9rem;
-  color: $store-text-muted;
-}
-
-// ----- Grid de productos -----
+// ========== Grid de productos ==========
 .store-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
 
-@media (min-width: 480px) {
+@media (min-width: 520px) {
   .store-grid {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -174,18 +449,16 @@ $store-radius-card: 8px;
   }
 }
 
-// ----- Tarjeta de producto -----
+// ========== Tarjeta de producto (estilo ML) ==========
 .product-card {
-  background: $store-card-bg;
-  border-radius: $store-radius-card;
-  box-shadow: $store-shadow;
-  border: 1px solid $store-border;
+  background: $card-bg;
+  border-radius: $radius;
   overflow: hidden;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.2s ease;
 
   &:hover {
-    box-shadow: $store-shadow-hover;
-    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
   }
 }
 
@@ -196,7 +469,7 @@ $store-radius-card: 8px;
   height: 100%;
 
   &:focus-visible {
-    outline: 2px solid $store-accent;
+    outline: 2px solid $accent;
     outline-offset: 2px;
   }
 }
@@ -204,20 +477,19 @@ $store-radius-card: 8px;
 .product-card-image-wrap {
   position: relative;
   aspect-ratio: 1;
-  background: #f5f5f5;
-  overflow: hidden;
+  background: #fafafa;
+  padding: 16px;
 }
 
 .product-card-image {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: 12px;
   transition: transform 0.25s ease;
 }
 
 .product-card:hover .product-card-image {
-  transform: scale(1.03);
+  transform: scale(1.04);
 }
 
 .product-card-placeholder {
@@ -226,105 +498,109 @@ $store-radius-card: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #bbb;
+  color: #ccc;
+  font-size: 2.5rem;
+}
 
-  svg {
-    width: 48px;
-    height: 48px;
+.product-card-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(0, 166, 80, 0.92);
+  color: #fff;
+
+  &.badge-devolucion {
+    background: #e65100;
+    color: #fff;
   }
 }
 
 .product-card-body {
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.product-card-badge {
-  display: inline-block;
-  align-self: flex-start;
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  padding: 4px 8px;
-  border-radius: 4px;
-  background: #e8f5e9;
-  color: #2e7d32;
-
-  &.product-card-badge-devolucion {
-    background: #fff3e0;
-    color: #e65100;
-  }
+  padding: 14px 16px;
+  border-top: 1px solid #f0f0f0;
 }
 
 .product-card-title {
-  margin: 0;
+  margin: 0 0 8px;
   font-size: 0.9rem;
-  font-weight: 500;
-  color: $store-text;
+  font-weight: 400;
+  color: $text;
   line-height: 1.35;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  min-height: 2.7em;
+  min-height: 2.6em;
 }
 
 .product-card-price {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: 700;
-  color: $store-price;
+  color: $price;
   letter-spacing: -0.02em;
 }
 
-// ----- Empty state -----
+// ========== Empty state ==========
 .store-empty {
   text-align: center;
-  padding: 64px 24px;
-  background: $store-card-bg;
-  border-radius: $store-radius;
-  border: 1px solid $store-border;
+  padding: 72px 24px;
+  background: $card-bg;
+  border-radius: $radius;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .store-empty-icon {
-  width: 80px;
-  height: 80px;
+  width: 64px;
+  height: 64px;
   margin: 0 auto 20px;
   color: #ccc;
-
-  svg {
-    width: 100%;
-    height: 100%;
-  }
+  font-size: 3rem;
 }
 
 .store-empty-title {
   margin: 0 0 8px;
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: 600;
-  color: $store-text;
+  color: $text;
 }
 
 .store-empty-text {
   margin: 0;
   font-size: 0.95rem;
-  color: $store-text-muted;
+  color: $text-muted;
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-// ----- Footer -----
+// ========== Footer ==========
 .store-footer {
-  background: $store-card-bg;
-  border-top: 1px solid $store-border;
-  padding: 20px 0;
+  background: #e6e6e6;
+  border-top: 1px solid $border;
+  padding: 24px 0;
   margin-top: auto;
+}
+
+.store-footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.store-footer-logo {
+  opacity: 0.8;
 }
 
 .store-footer-text {
   margin: 0;
   font-size: 0.85rem;
-  color: $store-text-muted;
-  text-align: center;
+  color: $text-muted;
 }
