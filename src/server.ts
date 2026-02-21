@@ -43,8 +43,14 @@ export async function netlifyAppEngineHandler(
     // Si SSR falla (p. ej. ruta desconocida), servir index.html para que el cliente muestre el 404
   }
   if (result) return result;
-  // Rewrite a index.html: el navegador mantiene la URL y carga la app; el router muestra tu 404
-  return new URL('/index.html', req.url) as unknown as Response;
+  // Servir index.html para que el cliente cargue la app y el router muestre tu 404 (el runtime no hace rewrite con URL)
+  const indexUrl = new URL('/index.html', req.url).href;
+  const indexRes = await fetch(indexUrl);
+  const html = await indexRes.text();
+  return new Response(html, {
+    status: 200,
+    headers: { 'Content-Type': 'text/html; charset=utf-8' },
+  });
 }
 
 /**
