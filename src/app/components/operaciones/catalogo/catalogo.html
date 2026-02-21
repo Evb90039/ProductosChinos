@@ -24,33 +24,14 @@
     </div>
   </header>
 
-  <!-- Contenido principal: en desktop sidebar lateral + grid; en móvil botón + dropdown -->
+  <!-- Contenido principal: menú hamburguesa + grid en todos los tamaños -->
   <main class="store-main">
     <div class="store-container store-layout">
       @if (vistaCatalogo$ | async; as vista) {
-        @if (vista.categorias.length > 1) {
-          <!-- Filtro lateral: solo visible en PC/tablet -->
-          <aside class="store-sidebar" aria-label="Filtrar por categoría">
-            <div class="store-sidebar-inner">
-              <h2 class="store-sidebar-title">Categorías</h2>
-              <nav class="store-sidebar-nav">
-                @for (c of vista.categorias; track c.value) {
-                  <button
-                    type="button"
-                    class="store-sidebar-option"
-                    [class.active]="selectedCategoria() === c.value"
-                    (click)="setCategoria(c.value)">
-                    {{ c.label }}
-                  </button>
-                }
-              </nav>
-            </div>
-          </aside>
-        }
         <div class="store-content">
           @if (vista.categorias.length > 1) {
-            <!-- Botón filtro + limpiar: solo visible en móvil -->
-            <div class="store-filter-wrap store-filter-mobile">
+            <!-- Botón filtro categorías + limpiar: visible en móvil, tablet y web -->
+            <div class="store-filter-wrap">
               <div class="store-filter-row">
                 <button
                   type="button"
@@ -59,9 +40,8 @@
                   [attr.aria-expanded]="showCategoriasDropdown()"
                   aria-haspopup="true"
                   aria-label="Filtrar por categoría">
-                  <i class="fas fa-layer-group store-filter-icon" aria-hidden="true"></i>
+                  <i class="fas fa-filter store-filter-btn-icon" aria-hidden="true"></i>
                   <span class="store-filter-label">{{ categoriasButtonLabel(vista) }}</span>
-                  <i class="fas fa-chevron-down store-filter-chevron" [class.is-open]="showCategoriasDropdown()" aria-hidden="true"></i>
                 </button>
                 @if (selectedCategoria()) {
                   <button type="button" class="store-filter-clear" (click)="setCategoriaAndClose('')" aria-label="Limpiar filtro">
@@ -70,10 +50,21 @@
                   </button>
                 }
               </div>
-              @if (showCategoriasDropdown()) {
-                <div class="store-filter-dropdown" role="listbox">
+            </div>
+
+            <!-- Panel lateral tipo hamburguesa (móvil, tablet y web) -->
+            @if (showCategoriasDropdown()) {
+              <div class="store-drawer-backdrop" (click)="setCategoriaAndClose(selectedCategoria())" aria-hidden="true"></div>
+              <aside class="store-drawer" role="dialog" aria-label="Categorías" [class.is-open]="showCategoriasDropdown()">
+                <div class="store-drawer-header">
+                  <h2 class="store-drawer-title">Categorías</h2>
+                  <button type="button" class="store-drawer-close" (click)="setCategoriaAndClose(selectedCategoria())" aria-label="Cerrar menú">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <nav class="store-drawer-nav">
                   @if (selectedCategoria()) {
-                    <button type="button" class="store-filter-option store-filter-clear-option" (click)="setCategoriaAndClose('')">
+                    <button type="button" class="store-drawer-option store-drawer-clear" (click)="setCategoriaAndClose('')">
                       <i class="fas fa-times-circle" aria-hidden="true"></i>
                       Limpiar filtro
                     </button>
@@ -81,16 +72,15 @@
                   @for (c of vista.categorias; track c.value) {
                     <button
                       type="button"
-                      class="store-filter-option"
+                      class="store-drawer-option"
                       [class.active]="selectedCategoria() === c.value"
-                      (click)="setCategoriaAndClose(c.value)"
-                      role="option">
+                      (click)="setCategoriaAndClose(c.value)">
                       {{ c.label }}
                     </button>
                   }
-                </div>
-              }
-            </div>
+                </nav>
+              </aside>
+            }
           }
           @if (vista.productos.length === 0) {
             <div class="store-empty">
