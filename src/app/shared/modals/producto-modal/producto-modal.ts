@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { EmpleadosService, type Empleado } from '../../../services/empleados.service';
 import { VendedoresService, type Vendedor } from '../../../services/vendedores.service';
 import { SpinnerComponent } from '../../components/spinner/spinner';
+import { CATEGORIAS_PRODUCTO, SIN_CATEGORIA_VALUE, SIN_CATEGORIA_LABEL } from '../../../constants/categorias';
 
 declare var bootstrap: any;
 
@@ -13,6 +14,8 @@ export interface ProductoFormData {
   imagenesUrls?: string[];
   /** Índice (0-based) de la imagen principal en la lista de imágenes. */
   imagenPrincipalIndex?: number;
+  /** Categoría del producto (ej. Electrónica, Hogar). Vacío = Sin categoría. */
+  categoria?: string;
   nombreVendedor: string;
   contacto: string;
   tienda: string;
@@ -63,6 +66,9 @@ export class ProductoModalComponent implements OnInit {
 
   readonly tarjetas = ['BBVA', 'MercaCredito', 'Banamex'];
   readonly tiendas: string[] = ['Amazon', 'Mercado Libre'];
+  readonly categorias = CATEGORIAS_PRODUCTO;
+  readonly sinCategoriaValue = SIN_CATEGORIA_VALUE;
+  readonly sinCategoriaLabel = SIN_CATEGORIA_LABEL;
 
   ngOnInit(): void {
     this.empleadosService.obtenerEmpleadosActivos().subscribe((lista) => {
@@ -117,6 +123,7 @@ export class ProductoModalComponent implements OnInit {
     nombreProducto: '',
     enlaceProducto: '',
     imagenPrincipalIndex: 0,
+    categoria: SIN_CATEGORIA_VALUE,
     nombreVendedor: '',
     contacto: '',
     tienda: '',
@@ -164,6 +171,7 @@ export class ProductoModalComponent implements OnInit {
       enlaceProducto: producto.enlaceProducto ?? '',
       imagenesUrls: producto.imagenesUrls ?? [],
       imagenPrincipalIndex: producto.imagenPrincipalIndex ?? 0,
+      categoria: producto.categoria ?? SIN_CATEGORIA_VALUE,
       nombreVendedor: producto.nombreVendedor ?? '',
       contacto: producto.contacto ?? '',
       tienda: producto.tienda ?? '',
@@ -320,6 +328,7 @@ export class ProductoModalComponent implements OnInit {
       enlaceProducto: '',
       imagenesUrls: undefined,
       imagenPrincipalIndex: 0,
+      categoria: SIN_CATEGORIA_VALUE,
       nombreVendedor: '',
       contacto: '',
       tienda: '',

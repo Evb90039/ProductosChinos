@@ -9,6 +9,11 @@ export const routes: Routes = [
     title: 'Login - Productos Chinos'
   },
   {
+    path: 'catalogo',
+    loadComponent: () => import('./components/operaciones/catalogo/catalogo').then(m => m.CatalogoComponent),
+    title: 'Catálogo - Productos Chinos'
+  },
+  {
     path: '',
     loadComponent: () => import('./components/layout/layout').then(m => m.LayoutComponent),
     canActivate: [authGuard],

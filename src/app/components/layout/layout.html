@@ -85,6 +85,22 @@
                 </a>
               }
             </div>
+            
+            <div class="nav-item nav-parent" (click)="toggleOperacionesCollapse()">
+              <i class="fas fa-cogs" style="color: #009688;"></i>
+              <span class="nav-text">Operaciones</span>
+              <span class="nav-badge">{{ operacionesMenuItems.length }}</span>
+              <span class="nav-arrow" [class.rotated]="!isOperacionesCollapsed">▼</span>
+            </div>
+            
+            <div class="nav-submenu" [class.collapsed]="isOperacionesCollapsed">
+              @for (item of operacionesMenuItems; track item.route) {
+                <a class="nav-item nav-subitem" [routerLink]="item.route">
+                  <i class="fas" [ngClass]="item.icon" [style.color]="item.iconColor"></i>
+                  <span class="nav-text">{{ item.label }}</span>
+                </a>
+              }
+            </div>
           </div>
         </div>
       </nav>

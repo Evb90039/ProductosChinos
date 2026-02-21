@@ -1,0 +1,330 @@
+// --- Catálogo público — Estilo marketplace (Mercado Libre / Amazon) ---
+
+$store-header-bg: #ffe600;
+$store-header-text: #333;
+$store-accent: #3483fa;
+$store-price: #00a650;
+$store-bg: #ededed;
+$store-card-bg: #fff;
+$store-text: #333;
+$store-text-muted: #666;
+$store-border: #e6e6e6;
+$store-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+$store-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.12);
+$store-radius: 8px;
+$store-radius-card: 8px;
+
+.catalogo-store {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: $store-bg;
+}
+
+.store-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+// ----- Header (barra amarilla tipo ML) -----
+.store-header {
+  background: $store-header-bg;
+  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.store-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.store-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: $store-header-text;
+  font-weight: 700;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+
+  &:hover {
+    color: $store-header-text;
+    opacity: 0.9;
+  }
+}
+
+.store-logo-icon {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.store-logo-text {
+  white-space: nowrap;
+}
+
+.store-tagline {
+  margin: 0;
+  font-size: 0.85rem;
+  color: $store-text-muted;
+  font-weight: 400;
+}
+
+// ----- Main -----
+.store-main {
+  flex: 1;
+  padding: 24px 0 48px;
+}
+
+.store-hero {
+  margin-bottom: 24px;
+}
+
+.store-hero-title {
+  margin: 0 0 4px;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: $store-text;
+  letter-spacing: -0.02em;
+}
+
+.store-hero-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: $store-text-muted;
+}
+
+// ----- Filtro por categorías (estilo ML/Amazon) -----
+.store-categorias {
+  margin-bottom: 20px;
+}
+
+.store-categorias-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.store-categoria-btn {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: $store-text-muted;
+  background: $store-card-bg;
+  border: 1px solid $store-border;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: $store-accent;
+    border-color: $store-accent;
+    background: #f0f7ff;
+  }
+
+  &.active {
+    color: #fff;
+    background: $store-accent;
+    border-color: $store-accent;
+  }
+}
+
+.store-results {
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  color: $store-text-muted;
+}
+
+// ----- Grid de productos -----
+.store-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media (min-width: 480px) {
+  .store-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .store-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .store-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+// ----- Tarjeta de producto -----
+.product-card {
+  background: $store-card-bg;
+  border-radius: $store-radius-card;
+  box-shadow: $store-shadow;
+  border: 1px solid $store-border;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: $store-shadow-hover;
+    transform: translateY(-2px);
+  }
+}
+
+.product-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+
+  &:focus-visible {
+    outline: 2px solid $store-accent;
+    outline-offset: 2px;
+  }
+}
+
+.product-card-image-wrap {
+  position: relative;
+  aspect-ratio: 1;
+  background: #f5f5f5;
+  overflow: hidden;
+}
+
+.product-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 12px;
+  transition: transform 0.25s ease;
+}
+
+.product-card:hover .product-card-image {
+  transform: scale(1.03);
+}
+
+.product-card-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #bbb;
+
+  svg {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+.product-card-body {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.product-card-badge {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #e8f5e9;
+  color: #2e7d32;
+
+  &.product-card-badge-devolucion {
+    background: #fff3e0;
+    color: #e65100;
+  }
+}
+
+.product-card-title {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: $store-text;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.7em;
+}
+
+.product-card-price {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: $store-price;
+  letter-spacing: -0.02em;
+}
+
+// ----- Empty state -----
+.store-empty {
+  text-align: center;
+  padding: 64px 24px;
+  background: $store-card-bg;
+  border-radius: $store-radius;
+  border: 1px solid $store-border;
+}
+
+.store-empty-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  color: #ccc;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.store-empty-title {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: $store-text;
+}
+
+.store-empty-text {
+  margin: 0;
+  font-size: 0.95rem;
+  color: $store-text-muted;
+}
+
+// ----- Footer -----
+.store-footer {
+  background: $store-card-bg;
+  border-top: 1px solid $store-border;
+  padding: 20px 0;
+  margin-top: auto;
+}
+
+.store-footer-text {
+  margin: 0;
+  font-size: 0.85rem;
+  color: $store-text-muted;
+  text-align: center;
+}

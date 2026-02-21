@@ -1,0 +1,83 @@
+<div class="catalogo-store">
+  <!-- Barra superior tipo marketplace -->
+  <header class="store-header">
+    <div class="store-header-inner">
+      <a class="store-logo" href="/catalogo">
+        <i class="fas fa-box store-logo-icon" aria-hidden="true"></i>
+        <span class="store-logo-text">Productos Chinos</span>
+      </a>
+      <p class="store-tagline">Catálogo en línea</p>
+    </div>
+  </header>
+
+  <!-- Contenido principal -->
+  <main class="store-main">
+    <div class="store-container">
+      <section class="store-hero">
+        <h1 class="store-hero-title">Catálogo</h1>
+        <p class="store-hero-subtitle">Productos disponibles — precios en página</p>
+      </section>
+
+      @if (vistaCatalogo$ | async; as vista) {
+        @if (vista.categorias.length > 1) {
+          <nav class="store-categorias" aria-label="Categorías">
+            <ul class="store-categorias-list">
+              @for (c of vista.categorias; track c.value) {
+                <li>
+                  <button
+                    type="button"
+                    class="store-categoria-btn"
+                    [class.active]="selectedCategoria() === c.value"
+                    (click)="setCategoria(c.value)">
+                    {{ c.label }}
+                  </button>
+                </li>
+              }
+            </ul>
+          </nav>
+        }
+        @if (vista.productos.length === 0) {
+          <div class="store-empty">
+            <div class="store-empty-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+              </svg>
+            </div>
+            <h2 class="store-empty-title">No hay productos en catálogo</h2>
+            <p class="store-empty-text">{{ selectedCategoria() ? 'No hay productos en esta categoría.' : 'Vuelve pronto para ver novedades.' }}</p>
+          </div>
+        } @else {
+          <p class="store-results">{{ vista.productos.length }} producto{{ vista.productos.length !== 1 ? 's' : '' }} disponible{{ vista.productos.length !== 1 ? 's' : '' }}</p>
+          <div class="store-grid">
+            @for (p of vista.productos; track p.id) {
+              <article class="product-card">
+                <a class="product-card-link" href="#" (click)="$event.preventDefault()">
+                  <div class="product-card-image-wrap">
+                    @if (imagenPrincipal(p); as src) {
+                      <img class="product-card-image" [src]="src" [alt]="p.nombreProducto || 'Producto'" loading="lazy">
+                    } @else {
+                      <div class="product-card-placeholder">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                      </div>
+                    }
+                  </div>
+                  <div class="product-card-body">
+                    <span class="product-card-badge" [class.product-card-badge-devolucion]="p.conDevolucion">{{ etiquetaGanancia(p) }}</span>
+                    <h2 class="product-card-title">{{ p.nombreProducto || 'Sin nombre' }}</h2>
+                    <p class="product-card-price">{{ formatPrecio(p.precioPagina) }}</p>
+                  </div>
+                </a>
+              </article>
+            }
+          </div>
+        }
+      }
+    </div>
+  </main>
+
+  <footer class="store-footer">
+    <div class="store-container">
+      <p class="store-footer-text">© Productos Chinos — Catálogo</p>
+    </div>
+  </footer>
+</div>

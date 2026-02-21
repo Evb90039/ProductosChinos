@@ -57,6 +57,23 @@
                 placeholder="https://...">
             </div>
             <div class="mb-3">
+              <label for="categoria" class="form-label">
+                <i class="fas fa-folder me-1"></i>
+                Categoría
+              </label>
+              <select
+                class="form-select"
+                id="categoria"
+                [(ngModel)]="form.categoria"
+                name="categoria">
+                <option [value]="sinCategoriaValue">{{ sinCategoriaLabel }}</option>
+                @for (c of categorias; track c) {
+                  <option [value]="c">{{ c }}</option>
+                }
+              </select>
+              <p class="form-text mb-0">Para organizar el catálogo público (estilo Mercado Libre / Amazon).</p>
+            </div>
+            <div class="mb-3">
               <label class="form-label">
                 <i class="fas fa-images me-1"></i>
                 Imágenes del Producto

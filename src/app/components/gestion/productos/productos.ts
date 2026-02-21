@@ -1,5 +1,6 @@
 import { Component, ViewChild, inject, signal, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { combineLatest, Subject } from 'rxjs';
 import { map, shareReplay, catchError, startWith, switchMap } from 'rxjs/operators';
@@ -10,10 +11,11 @@ import { ProductosService, Producto } from '../../../services/productos.service'
 import { NotificationService } from '../../../services/notification.service';
 import { NotificationComponent } from '../../../shared/components/notification/notification';
 import { SpinnerComponent } from '../../../shared/components/spinner/spinner';
+import { SIN_CATEGORIA_LABEL } from '../../../constants/categorias';
 
 @Component({
   selector: 'app-productos',
-  imports: [CommonModule, ProductoModalComponent, NotificationComponent, SpinnerComponent],
+  imports: [CommonModule, FormsModule, ProductoModalComponent, NotificationComponent, SpinnerComponent],
   templateUrl: './productos.html',
   styleUrls: ['./productos.scss'],
 })
@@ -26,6 +28,8 @@ export class ProductosComponent {
   private readonly notificationService = inject(NotificationService);
 
   readonly searchTerm = signal('');
+  /** Filtro por categoría: '' = todas, o nombre de categoría. */
+  readonly filterCategoria = signal<string>('');
   /** Filtro rápido: todos | catalogo | apartados | pendientes-resena | pendientes-rembolso | regalados | vendidos | con-devolucion */
   readonly filterType = signal<'todos' | 'catalogo' | 'apartados' | 'pendientes-resena' | 'pendientes-rembolso' | 'regalados' | 'vendidos' | 'con-devolucion'>('catalogo');
   /** true mientras se guarda (agregar/actualizar) para mostrar overlay spinner. */
@@ -33,6 +37,7 @@ export class ProductosComponent {
   /** Página actual (1-based). */
   readonly currentPage = signal(1);
   readonly pageSize = 8;
+  readonly sinCategoriaLabel = SIN_CATEGORIA_LABEL;
   private readonly refresh$ = new Subject<void>();
 
   readonly productos$ = this.refresh$.pipe(
@@ -52,8 +57,9 @@ export class ProductosComponent {
     this.productos$,
     toObservable(this.searchTerm).pipe(startWith('')),
     toObservable(this.filterType).pipe(startWith('catalogo')),
+    toObservable(this.filterCategoria).pipe(startWith('')),
   ]).pipe(
-    map(([productos, term, filterType]) => {
+    map(([productos, term, filterType, filterCategoria]) => {
       const t = term.trim().toLowerCase();
       let list = !t
         ? productos
@@ -63,6 +69,9 @@ export class ProductosComponent {
               p.nombreVendedor?.toLowerCase().includes(t) ||
               p.tienda?.toLowerCase().includes(t)
           );
+      if (filterCategoria) {
+        list = list.filter((p) => (p.categoria ?? '') === filterCategoria);
+      }
       switch (filterType) {
         case 'catalogo':
           list = list.filter((p) => !p.apartado && !p.vendido && !p.regalado && (p.precioPagina != null && p.precioPagina !== 0));
@@ -104,9 +113,11 @@ export class ProductosComponent {
       const conDevolucion = productos.filter((p) => p.conDevolucion).length;
       const enCatalogo = productos.filter((p) => !p.apartado && !p.vendido && !p.regalado && (p.precioPagina != null && p.precioPagina !== 0)).length;
       const apartados = productos.filter((p) => p.apartado).length;
+      const categoriasUnicas = Array.from(new Set(productos.map((p) => p.categoria ?? '').filter(Boolean))).sort();
       return {
         filtered: list,
         total,
+        categoriasUnicas,
         stats: {
           regalados,
           pendientesResena,
@@ -171,6 +182,16 @@ export class ProductosComponent {
   setFilterType(value: 'todos' | 'catalogo' | 'apartados' | 'pendientes-resena' | 'pendientes-rembolso' | 'regalados' | 'vendidos' | 'con-devolucion') {
     this.filterType.set(value);
     this.currentPage.set(1);
+  }
+
+  setFilterCategoria(categoria: string) {
+    this.filterCategoria.set(categoria);
+    this.currentPage.set(1);
+  }
+
+  /** Etiqueta de categoría para mostrar en tabla (vacío → Sin categoría). */
+  categoriaLabel(categoria: string | undefined | null): string {
+    return categoria?.trim() || this.sinCategoriaLabel;
   }
 
   setPage(page: number) {

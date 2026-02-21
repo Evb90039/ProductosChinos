@@ -208,6 +208,27 @@
           }
         }
 
+        .filter-categoria-wrap {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+
+          .filter-categoria-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #64748b;
+            margin: 0;
+            white-space: nowrap;
+          }
+
+          .filter-categoria-select {
+            min-width: 140px;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+          }
+        }
+
         .search-box {
           position: relative;
           display: flex;
@@ -261,8 +282,8 @@
       .product-list-header,
       .product-list-row {
         display: grid;
-        /* Mínimos para que no se corte el texto; Producto y Vendedor pueden crecer */
-        grid-template-columns: 70px minmax(180px, 2fr) minmax(150px, 180px) minmax(90px, 100px) minmax(90px, 100px) minmax(90px, 100px) minmax(90px, 100px) minmax(100px, 120px) minmax(85px, 100px) 90px;
+        /* Imagen, Producto, Categoría, Vendedor, Precios, Ganancia, Estado, Acciones */
+        grid-template-columns: 70px minmax(180px, 2fr) minmax(100px, 120px) minmax(150px, 180px) minmax(90px, 100px) minmax(90px, 100px) minmax(90px, 100px) minmax(90px, 100px) minmax(100px, 120px) minmax(85px, 100px) 90px;
         gap: 0.75rem 1rem;
         align-items: center;
         padding: 0.75rem 1rem;
@@ -310,6 +331,19 @@
           strong {
             color: #2c3e50;
           }
+        }
+
+        .col-categoria .categoria-tag {
+          display: inline-block;
+          font-size: 0.75rem;
+          padding: 0.2rem 0.5rem;
+          background: #f1f5f9;
+          color: #475569;
+          border-radius: 0.35rem;
+          white-space: nowrap;
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         .col-vendedor {

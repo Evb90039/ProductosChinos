@@ -105,6 +105,7 @@ export class ProductosService {
       enlaceProducto: (data['enlaceProducto'] as string) ?? '',
       imagenesUrls: (data['imagenesUrls'] as string[]) ?? [],
       imagenPrincipalIndex: (data['imagenPrincipalIndex'] as number) ?? 0,
+      categoria: (data['categoria'] as string) ?? '',
       nombreVendedor: (data['nombreVendedor'] as string) ?? '',
       contacto: (data['contacto'] as string) ?? '',
       tienda: (data['tienda'] as string) ?? '',
