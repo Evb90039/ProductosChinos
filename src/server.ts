@@ -1,86 +1,37 @@
-import {
-  AngularNodeAppEngine,
-  createNodeRequestHandler,
-  isMainModule,
-  writeResponseToNodeResponse,
-} from '@angular/ssr/node';
-import express from 'express';
-import { join } from 'node:path';
+import { AngularAppEngine, createRequestHandler } from '@angular/ssr';
+import { getContext } from '@netlify/angular-runtime/context.mjs';
 
-const browserDistFolder = join(import.meta.dirname, '../browser');
+const angularAppEngine = new AngularAppEngine();
 
-const app = express();
-const angularApp = new AngularNodeAppEngine();
+export async function netlifyAppEngineHandler(
+  request: Request,
+): Promise<Response> {
+  const context = getContext();
 
-/**
- * Normaliza la request en entornos edge (p. ej. Netlify) donde host/hostname pueden venir undefined.
- * Evita: TypeError: Cannot read properties of undefined (reading 'hostname')
- */
-app.use((req, _res, next) => {
-  const host =
-    req.headers['x-forwarded-host'] ||
-    req.headers['host'] ||
-    (typeof req.get === 'function' ? req.get?.('host') : undefined);
-  if (!req.headers.host && host) {
-    req.headers.host = Array.isArray(host) ? host[0] : String(host);
-  }
-  if (!req.headers.host) {
-    req.headers.host = 'localhost';
-  }
-  next();
-});
-
-/**
- * Example Express Rest API endpoints can be defined here.
- * Uncomment and define endpoints as necessary.
- *
- * Example:
- * ```ts
- * app.get('/api/{*splat}', (req, res) => {
- *   // Handle API request
- * });
- * ```
- */
-
-/**
- * Serve static files from /browser
- */
-app.use(
-  express.static(browserDistFolder, {
-    maxAge: '1y',
-    index: false,
-    redirect: false,
-  }),
-);
-
-/**
- * Handle all other requests by rendering the Angular application.
- */
-app.use((req, res, next) => {
-  angularApp
-    .handle(req)
-    .then((response) =>
-      response ? writeResponseToNodeResponse(response, res) : next(),
-    )
-    .catch(next);
-});
-
-/**
- * Start the server if this module is the main entry point, or it is ran via PM2.
- * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
- */
-if (isMainModule(import.meta.url) || process.env['pm_id']) {
-  const port = process.env['PORT'] || 4000;
-  app.listen(port, (error) => {
-    if (error) {
-      throw error;
+  // Normaliza la URL si falta hostname (evita "Cannot read properties of undefined (reading 'hostname')" en edge)
+  let req = request;
+  try {
+    const url = new URL(request.url);
+    if (!url.hostname) {
+      const host =
+        request.headers.get('x-forwarded-host') ||
+        request.headers.get('host') ||
+        'localhost';
+      const proto =
+        request.headers.get('x-forwarded-proto') ||
+        request.headers.get('x-forwarded-protocol') ||
+        'https';
+      req = new Request(`${proto}://${host}${url.pathname}${url.search}`, request);
     }
+  } catch {
+    // Si falla el parse, seguir con la request original
+  }
 
-    console.log(`Node Express server listening on http://localhost:${port}`);
-  });
+  const result = await angularAppEngine.handle(req, context);
+  return result ?? new Response('Not found', { status: 404 });
 }
 
 /**
- * Request handler used by the Angular CLI (for dev-server and during build) or Firebase Cloud Functions.
+ * Request handler used by the Angular CLI (dev-server and during build).
  */
-export const reqHandler = createNodeRequestHandler(app);
+export const reqHandler = createRequestHandler(netlifyAppEngineHandler);
