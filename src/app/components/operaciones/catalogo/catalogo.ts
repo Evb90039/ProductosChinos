@@ -90,7 +90,7 @@ export class CatalogoComponent {
   etiquetaGanancia(producto: Producto): string {
     if (producto.conDevolucion && producto.porcentajeDevolucion != null) {
       const mitad = Math.round(producto.porcentajeDevolucion / 2);
-      return `${mitad}% devolución`;
+      return `${mitad}% Ganancia`;
     }
     return '50% ganancia';
   }
