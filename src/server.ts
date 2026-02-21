@@ -13,6 +13,24 @@ const app = express();
 const angularApp = new AngularNodeAppEngine();
 
 /**
+ * Normaliza la request en entornos edge (p. ej. Netlify) donde host/hostname pueden venir undefined.
+ * Evita: TypeError: Cannot read properties of undefined (reading 'hostname')
+ */
+app.use((req, _res, next) => {
+  const host =
+    req.headers['x-forwarded-host'] ||
+    req.headers['host'] ||
+    (typeof req.get === 'function' ? req.get?.('host') : undefined);
+  if (!req.headers.host && host) {
+    req.headers.host = Array.isArray(host) ? host[0] : String(host);
+  }
+  if (!req.headers.host) {
+    req.headers.host = 'localhost';
+  }
+  next();
+});
+
+/**
  * Example Express Rest API endpoints can be defined here.
  * Uncomment and define endpoints as necessary.
  *
