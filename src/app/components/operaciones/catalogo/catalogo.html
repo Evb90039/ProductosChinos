@@ -63,12 +63,6 @@
                   </button>
                 </div>
                 <nav class="store-drawer-nav">
-                  @if (selectedCategoria()) {
-                    <button type="button" class="store-drawer-option store-drawer-clear" (click)="setCategoriaAndClose('')">
-                      <i class="fas fa-times-circle" aria-hidden="true"></i>
-                      Limpiar filtro
-                    </button>
-                  }
                   @for (c of vista.categorias; track c.value) {
                     <button
                       type="button"

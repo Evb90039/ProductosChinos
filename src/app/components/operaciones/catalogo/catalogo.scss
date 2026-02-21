@@ -458,23 +458,6 @@ $radius: 8px;
   }
 }
 
-.store-drawer-clear {
-  color: $text-muted;
-  border-bottom: 1px solid $border;
-  margin-bottom: 8px;
-  padding-bottom: 14px;
-
-  i {
-    font-size: 1.1rem;
-    color: #c62828;
-  }
-
-  &:hover {
-    background: rgba(198, 40, 40, 0.06);
-    color: #c62828;
-  }
-}
-
 .store-filter-dropdown {
   position: absolute;
   top: 100%;
