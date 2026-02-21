@@ -12,9 +12,3 @@
   from = "/*"
   to = "/index.html"
   status = 200
-  
-# Si la edge function de Angular SSR falla, continuar y servir la app (luego Angular muestra el 404)
-[[edge_functions]]
-  path = "/*"
-  function = "angular-ssr"
-  onError = "bypass"
