@@ -9,9 +9,9 @@ export const environment = {
     appId: "APP_ID"
   },
   cloudinary: {
-    cloudName: 'CloudinaryCloudName',
-    apiKey: 'CloudinaryAPIKey',
-    uploadPreset: 'UploadPreset',
+    cloudName: "CloudinaryCloudName",
+    apiKey: "CloudinaryAPIKey",
+    uploadPreset: "UploadPreset",
     apiSecret: undefined as string | undefined,
     deleteEndpoint: undefined as string | undefined
   }
