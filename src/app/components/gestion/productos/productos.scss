@@ -276,19 +276,20 @@
         border-radius: 1rem;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
-        min-width: 0;
+        /* Ancho mínimo para que las columnas no se aplasten; si no cabe, aparece scroll horizontal */
+        min-width: min(100%, 1180px);
       }
 
       .product-list-header,
       .product-list-row {
         display: grid;
         /* Imagen, Producto, Categoría, Vendedor, Precios, Ganancia, Estado, Acciones */
-        grid-template-columns: 70px minmax(180px, 2fr) minmax(100px, 120px) minmax(150px, 180px) minmax(90px, 100px) minmax(90px, 100px) minmax(90px, 100px) minmax(90px, 100px) minmax(100px, 120px) minmax(85px, 100px) 90px;
-        gap: 0.75rem 1rem;
+        grid-template-columns: 70px minmax(180px, 2fr) minmax(100px, 120px) minmax(150px, 180px) minmax(100px, 110px) minmax(100px, 115px) minmax(96px, 110px) minmax(108px, 118px) minmax(100px, 120px) minmax(85px, 100px) 90px;
+        gap: 0.75rem 1.25rem;
         align-items: center;
         padding: 0.75rem 1rem;
         min-height: 56px;
-        min-width: min-content;
+        min-width: 1180px;
       }
 
       .product-list-header {
@@ -302,7 +303,17 @@
         letter-spacing: 0.05em;
         color: #64748b;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-        white-space: nowrap;
+      }
+
+      /* Permitir salto de línea en encabezados largos para evitar solapamiento */
+      .product-list-header .col-dinero-rembolsado,
+      .product-list-header .col-precio-neto,
+      .product-list-header .col-precio-pagina,
+      .product-list-header .col-precio-compra,
+      .product-list-header .col-ganancia {
+        white-space: normal;
+        word-break: break-word;
+        line-height: 1.2;
       }
 
       .product-list-header .col-imagen,
