@@ -1,5 +1,7 @@
+/** Emails de administradores que pueden entrar a Personal (control de déficit). Ajusta con tu(s) email(s). */
 export const environment = {
   production: false,
+  adminEmails: [] as string[], // Ej: ['tu-email@gmail.com']
   firebase: {
     apiKey: "AIzaSyDB-zH0zA1If_esGsag4awWxenZjYo8Aeo",
     authDomain: "productoschinos-a0198.firebaseapp.com",

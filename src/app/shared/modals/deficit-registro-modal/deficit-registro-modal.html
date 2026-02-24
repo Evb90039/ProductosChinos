@@ -1,0 +1,84 @@
+<div class="modal fade" #deficitModal tabindex="-1" aria-labelledby="deficitModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deficitModalLabel">
+          @if (editId) {
+            <i class="fas fa-edit me-2"></i>
+            Editar registro de déficit
+          } @else {
+            <i class="fas fa-plus-circle me-2"></i>
+            Nuevo registro de déficit
+          }
+        </h5>
+        <button type="button" class="btn-close" (click)="cerrar()" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label for="fecha" class="form-label"><i class="fas fa-calendar me-1"></i> Fecha</label>
+            <input type="date" class="form-control" id="fecha" [(ngModel)]="form.fecha" name="fecha">
+          </div>
+          <div class="col-md-6">
+            <label for="pesoKg" class="form-label"><i class="fas fa-weight me-1"></i> Peso (kg)</label>
+            <input type="number" step="0.1" class="form-control" id="pesoKg" [(ngModel)]="form.pesoKg" name="pesoKg" placeholder="ej. 75.5">
+          </div>
+          <div class="col-md-4">
+            <label for="desayunoCal" class="form-label">Desayuno (cal)</label>
+            <input type="number" class="form-control" id="desayunoCal" [(ngModel)]="form.desayunoCal" name="desayunoCal" placeholder="0">
+          </div>
+          <div class="col-md-4">
+            <label for="comidaCal" class="form-label">Comida (cal)</label>
+            <input type="number" class="form-control" id="comidaCal" [(ngModel)]="form.comidaCal" name="comidaCal" placeholder="0">
+          </div>
+          <div class="col-md-4">
+            <label for="cenaCal" class="form-label">Cena (cal)</label>
+            <input type="number" class="form-control" id="cenaCal" [(ngModel)]="form.cenaCal" name="cenaCal" placeholder="0">
+          </div>
+          <div class="col-md-4">
+            <label for="proteinaG" class="form-label">Proteína (g)</label>
+            <input type="number" class="form-control" id="proteinaG" [(ngModel)]="form.proteinaG" name="proteinaG" placeholder="0">
+          </div>
+          <div class="col-md-4">
+            <label for="pasosReales" class="form-label">Pasos REALES</label>
+            <input type="number" class="form-control" id="pasosReales" [(ngModel)]="form.pasosReales" name="pasosReales" placeholder="0">
+          </div>
+          <div class="col-md-4">
+            <label for="kcalApp" class="form-label">Kcal App</label>
+            <input type="number" class="form-control" id="kcalApp" [(ngModel)]="form.kcalApp" name="kcalApp" placeholder="0">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">TDEE (cal)</label>
+            @if (tdeeCalculado != null) {
+              <div class="form-control tdee-calculado" readonly>{{ tdeeCalculado }} cal (calculado)</div>
+            } @else if (perfil) {
+              <div class="form-control tdee-calculado" readonly>Ingresa peso (y opcionalmente pasos) para calcular TDEE</div>
+            } @else {
+              <div class="form-control tdee-calculado tdee-sin-perfil" readonly>
+                <button type="button" class="btn-link-perfil" (click)="abrirPerfilClick.emit()">Configura tus datos (altura, edad, sexo)</button> para calcular TDEE
+              </div>
+            }
+          </div>
+          <div class="col-12">
+            <label for="notas" class="form-label">Notas</label>
+            <textarea class="form-control" id="notas" [(ngModel)]="form.notas" name="notas" rows="2" placeholder="Observaciones..."></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrar()">
+          <i class="fas fa-times me-1"></i>
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" (click)="guardar()" [disabled]="saving">
+          @if (saving) {
+            <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+          } @else {
+            <i class="fas fa-save me-1"></i>
+          }
+          {{ editId ? 'Actualizar' : 'Guardar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

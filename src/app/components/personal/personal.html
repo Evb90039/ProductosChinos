@@ -1,0 +1,187 @@
+<div class="personal-container">
+  <header class="page-header">
+    <div class="header-content">
+      <span class="header-icon" aria-hidden="true">
+        <i class="fas fa-heartbeat"></i>
+      </span>
+      <div class="header-text">
+        <h1 class="page-title">Control de déficit</h1>
+        <p class="page-subtitle">Registro diario de calorías, peso y actividad</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button type="button" class="btn btn-tdee" (click)="abrirModalPerfil()">
+        <i class="fas fa-cog"></i>
+        Datos para TDEE
+      </button>
+      <button type="button" class="btn btn-add" (click)="abrirModal()">
+        <i class="fas fa-plus"></i>
+        Agregar registro
+      </button>
+    </div>
+  </header>
+
+  <section class="content-section">
+    @if (registros$ | async; as registros) {
+      @if (registros.length === 0) {
+        <div class="empty-state">
+          <span class="empty-state-icon"><i class="fas fa-clipboard-list"></i></span>
+          <p class="empty-state-text">No hay registros. Usa el botón <strong>Agregar registro</strong> para llevar el control de tu déficit.</p>
+        </div>
+      } @else {
+        <div class="distribution-guide">
+          <span class="distribution-guide-title"><i class="fas fa-info-circle me-1"></i> Rango recomendado por comida (cal)</span>
+          <div class="distribution-guide-items">
+            <span class="guide-item"><span class="meal-value meal-green">Desayuno 400–600</span></span>
+            <span class="guide-item"><span class="meal-value meal-green">Comida 700–900</span></span>
+            <span class="guide-item"><span class="meal-value meal-green">Cena 500–700</span></span>
+            <span class="guide-item"><span class="meal-value meal-green">Proteína 1.2–2.0 g/kg</span></span>
+          </div>
+          <span class="distribution-guide-legend">Calorías: ref. 2000 kcal/día. Proteína: por kg de peso · Verde = óptimo · Naranja = aceptable · Rojo = a ajustar</span>
+        </div>
+        <div class="table-card">
+          <div class="table-wrap">
+            <table class="deficit-table">
+              <thead>
+                <tr>
+                  <th>Día</th>
+                  <th>Fecha</th>
+                  <th>Peso</th>
+                  <th>Desayuno</th>
+                  <th>Comida</th>
+                  <th>Cena</th>
+                  <th>Total Cal</th>
+                  <th>Proteína</th>
+                  <th>Pasos</th>
+                  <th>Kcal App</th>
+                  <th>TDEE</th>
+                  <th>Déficit</th>
+                  <th>Notas</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (r of registros; track r.id) {
+                  <tr>
+                    <td><span class="day-badge">{{ diaSemana(r.fecha) }}</span></td>
+                    <td><span class="cell-date">{{ r.fecha }}</span></td>
+                    <td>{{ formatNum(r.pesoKg) }}</td>
+                    <td>
+                      @if (mealDistributionClass(r, 'desayuno'); as cls) {
+                        <span class="meal-value" [ngClass]="cls">{{ formatNum(r.desayunoCal) }}</span>
+                      } @else {
+                        {{ formatNum(r.desayunoCal) }}
+                      }
+                    </td>
+                    <td>
+                      @if (mealDistributionClass(r, 'comida'); as cls) {
+                        <span class="meal-value" [ngClass]="cls">{{ formatNum(r.comidaCal) }}</span>
+                      } @else {
+                        {{ formatNum(r.comidaCal) }}
+                      }
+                    </td>
+                    <td>
+                      @if (mealDistributionClass(r, 'cena'); as cls) {
+                        <span class="meal-value" [ngClass]="cls">{{ formatNum(r.cenaCal) }}</span>
+                      } @else {
+                        {{ formatNum(r.cenaCal) }}
+                      }
+                    </td>
+                    <td class="cell-total">{{ totalCal(r) }}</td>
+                    <td>
+                      @if (proteinDistributionClass(r); as cls) {
+                        <span class="meal-value" [ngClass]="cls">{{ formatNum(r.proteinaG) }}</span>
+                      } @else {
+                        {{ formatNum(r.proteinaG) }}
+                      }
+                    </td>
+                    <td>{{ formatNum(r.pasosReales) }}</td>
+                    <td>{{ formatNum(r.kcalApp) }}</td>
+                    <td>{{ formatNum(r.tdeeCal) }}</td>
+                    <td>
+                      @if (deficitCal(r) != null) {
+                        <span class="deficit-value" [class.positive]="(deficitCal(r) ?? 0) > 0">{{ deficitCal(r) }}</span>
+                      } @else {
+                        <span class="cell-empty">—</span>
+                      }
+                    </td>
+                    <td class="notas-cell">{{ r.notas || '—' }}</td>
+                    <td>
+                      <button type="button" class="btn-icon btn-edit" title="Editar" (click)="editarRegistro(r)">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button type="button" class="btn-icon btn-delete" title="Eliminar" (click)="eliminar(r.id)">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    } @else {
+      <div class="loading-state">
+        <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
+        <p>Cargando registros...</p>
+      </div>
+    }
+  </section>
+</div>
+
+@if (saving()) {
+  <app-spinner mode="overlay" message="Guardando registro..." size="lg"></app-spinner>
+}
+
+<app-deficit-registro-modal
+  [perfil]="perfil"
+  (registroGuardado)="guardarRegistro($event)"
+  (abrirPerfilClick)="onAbrirPerfilClick()">
+</app-deficit-registro-modal>
+
+<!-- Modal datos para TDEE -->
+<div class="modal fade" #modalPerfil tabindex="-1" aria-labelledby="modalPerfilLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalPerfilLabel">
+          <i class="fas fa-calculator me-2"></i>
+          Datos para calcular TDEE
+        </h5>
+        <button type="button" class="btn-close" (click)="cerrarModalPerfil()" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted small mb-3">Se usa la fórmula Mifflin-St Jeor. El nivel de actividad se calcula automáticamente según los <strong>pasos del día</strong> que registres en cada entrada.</p>
+        <form class="deficit-form" id="form-perfil-tdee" (ngSubmit)="$event.preventDefault(); guardarPerfil()">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="alturaCm" class="form-label">Altura (cm)</label>
+              <input type="number" class="form-control" id="alturaCm" [(ngModel)]="perfilForm.alturaCm" name="alturaCm" placeholder="170" min="100" max="250">
+            </div>
+            <div class="col-md-6">
+              <label for="edad" class="form-label">Edad (años)</label>
+              <input type="number" class="form-control" id="edad" [(ngModel)]="perfilForm.edad" name="edad" placeholder="30" min="10" max="120">
+            </div>
+            <div class="col-md-6">
+              <label for="sexo" class="form-label">Sexo</label>
+              <select class="form-select" id="sexo" [(ngModel)]="perfilForm.sexo" name="sexo">
+                <option value="M">Hombre</option>
+                <option value="F">Mujer</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModalPerfil()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" form="form-perfil-tdee">
+          <i class="fas fa-save me-1"></i>
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-notification></app-notification>

@@ -58,6 +58,11 @@ export const routes: Routes = [
         loadComponent: () => import('./components/analisis/inversiones/inversiones').then(m => m.InversionesComponent),
         title: 'Inversiones - Productos Chinos'
       },
+      {
+        path: 'personal',
+        loadComponent: () => import('./components/personal/personal').then(m => m.PersonalComponent),
+        title: 'Control déficit - Productos Chinos'
+      },
       { 
         path: '', 
         redirectTo: '/dashboard', 

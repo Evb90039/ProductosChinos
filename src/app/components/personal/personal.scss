@@ -1,0 +1,469 @@
+// --- Variables (paleta salud / déficit) ---
+$primary: #c2185b;
+$primary-light: #e91e63;
+$primary-dark: #880e4f;
+$primary-bg: rgba(194, 24, 91, 0.06);
+$primary-border: rgba(194, 24, 91, 0.2);
+$accent: #ec407a;
+$success: #2e7d32;
+$success-bg: rgba(46, 125, 50, 0.1);
+$text: #1e293b;
+$text-muted: #64748b;
+$bg-card: #ffffff;
+$bg-row: #fafafa;
+$bg-row-hover: #f1f5f9;
+$border: #e2e8f0;
+$radius: 12px;
+$radius-sm: 8px;
+$shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+.personal-container {
+  padding: 0;
+  background: transparent;
+  max-width: 100%;
+}
+
+// --- Header ---
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+  padding: 1.25rem 1.5rem;
+  background: $bg-card;
+  border-radius: $radius;
+  border: 1px solid $border;
+  box-shadow: $shadow-sm;
+
+  .header-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .header-icon {
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, $primary, $primary-dark);
+    color: white;
+    border-radius: $radius-sm;
+    font-size: 1.5rem;
+    border: none;
+    box-shadow: 0 4px 12px rgba(194, 24, 91, 0.35);
+  }
+
+  .header-text {
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: $text;
+      margin: 0 0 0.2rem 0;
+      letter-spacing: -0.02em;
+    }
+
+    .page-subtitle {
+      color: $text-muted;
+      margin: 0;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+
+  .btn-tdee {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $primary;
+    background: $primary-bg;
+    border: 2px solid $primary-border;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(194, 24, 91, 0.12);
+      border-color: $primary-light;
+      color: $primary-dark;
+    }
+  }
+
+  .btn-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, $primary-light, $primary-dark);
+    border: none;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(194, 24, 91, 0.4);
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(194, 24, 91, 0.45);
+      background: linear-gradient(135deg, $accent, $primary-light);
+    }
+  }
+}
+
+// --- Contenido ---
+.content-section {
+  min-height: 200px;
+}
+
+// --- Estado vacío ---
+.empty-state {
+  text-align: center;
+  padding: 3.5rem 2rem;
+  background: $bg-card;
+  border-radius: $radius;
+  border: 2px dashed $primary-border;
+  background-color: $primary-bg;
+
+  .empty-state-icon {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-size: 3.5rem;
+    color: rgba(194, 24, 91, 0.35);
+  }
+
+  .empty-state-text {
+    margin: 0;
+    color: $text-muted;
+    font-size: 1rem;
+    line-height: 1.5;
+    max-width: 360px;
+    margin: 0 auto;
+
+    strong {
+      color: $primary-dark;
+    }
+  }
+}
+
+// --- Estado de carga ---
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 4rem 2rem;
+  background: $bg-card;
+  border-radius: $radius;
+  border: 1px solid $border;
+
+  .spinner-border {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  p {
+    margin: 0;
+    color: $text-muted;
+    font-weight: 500;
+  }
+}
+
+// --- Guía de distribución (promedio por comida) ---
+.distribution-guide {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba(248, 250, 252, 0.9);
+  border: 1px solid $border;
+  border-radius: $radius-sm;
+  font-size: 0.85rem;
+
+  .distribution-guide-title {
+    font-weight: 600;
+    color: $text;
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
+
+  .distribution-guide-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .guide-item .meal-value.meal-green {
+    background: rgba(46, 125, 50, 0.2);
+    color: #1b5e20;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+  }
+
+  .distribution-guide-legend {
+    color: $text-muted;
+    font-size: 0.8rem;
+  }
+}
+
+// --- Tabla ---
+.table-card {
+  background: $bg-card;
+  border-radius: $radius;
+  border: 1px solid $border;
+  box-shadow: $shadow;
+  overflow: hidden;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.deficit-table {
+  width: 100%;
+  min-width: 1100px;
+  margin: 0;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+
+  th,
+  td {
+    padding: 0.85rem 0.65rem;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  thead {
+    tr {
+      background: linear-gradient(180deg, rgba(194, 24, 91, 0.08), rgba(194, 24, 91, 0.04));
+      border-bottom: 2px solid $primary-border;
+    }
+
+    th {
+      color: $primary-dark;
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+  }
+
+  tbody {
+    tr {
+      background: $bg-card;
+      border-bottom: 1px solid $border;
+      transition: background 0.15s ease;
+
+      &:nth-child(even) {
+        background: $bg-row;
+      }
+
+      &:hover {
+        background: $bg-row-hover;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    td {
+      color: $text;
+      font-weight: 500;
+    }
+  }
+
+  .day-badge {
+    display: inline-block;
+    min-width: 2.5rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: $primary-dark;
+    background: $primary-bg;
+    border-radius: 6px;
+    text-align: center;
+  }
+
+  .cell-date {
+    font-variant-numeric: tabular-nums;
+    color: $text;
+  }
+
+  .cell-total {
+    font-weight: 700;
+    color: $text;
+  }
+
+  .deficit-value {
+    font-weight: 700;
+    color: $success;
+    background: $success-bg;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+
+    &.positive {
+      color: $success;
+    }
+  }
+
+  .meal-value {
+    display: inline-block;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    min-width: 2.5rem;
+    text-align: center;
+
+    &.meal-green {
+      background: rgba(46, 125, 50, 0.15);
+      color: #1b5e20;
+    }
+
+    &.meal-orange {
+      background: rgba(239, 108, 0, 0.15);
+      color: #e65100;
+    }
+
+    &.meal-red {
+      background: rgba(211, 47, 47, 0.12);
+      color: #c62828;
+    }
+  }
+
+  .cell-empty {
+    color: #94a3b8;
+    font-weight: 400;
+  }
+
+  .notas-cell {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 400;
+    color: $text-muted;
+    font-size: 0.8rem;
+  }
+
+  .btn-icon {
+    width: 34px;
+    height: 34px;
+    border: none;
+    background: #f1f5f9;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: $text-muted;
+    transition: all 0.2s ease;
+  }
+
+  .btn-edit:hover {
+    background: rgba(194, 24, 91, 0.12);
+    color: $primary-dark;
+  }
+
+  .btn-delete:hover {
+    background: #fef2f2;
+    color: #dc2626;
+  }
+
+  td:last-child .btn-icon + .btn-icon {
+    margin-left: 0.35rem;
+  }
+}
+
+// --- Modal TDEE (perfil) en esta vista ---
+:host ::ng-deep .modal .modal-header {
+  background: linear-gradient(135deg, $primary-light, $primary-dark);
+  color: white;
+  border-bottom: none;
+
+  .modal-title {
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+  }
+
+  .btn-close {
+    filter: brightness(0) invert(1);
+    opacity: 0.85;
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.deficit-form {
+  .form-label {
+    font-weight: 600;
+    color: $text;
+    i {
+      color: $primary-light;
+    }
+  }
+
+  .form-control,
+  .form-select {
+    border: 2px solid $border;
+    border-radius: $radius-sm;
+    padding: 0.6rem 0.75rem;
+    &:focus {
+      border-color: $primary-light;
+      box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.12);
+      outline: none;
+    }
+  }
+
+  .tdee-calculado {
+    background: #f8fafc;
+    color: $text-muted;
+    &.tdee-sin-perfil {
+      background: #fef3c7;
+      color: #92400e;
+    }
+  }
+
+  .btn-link-perfil {
+    background: none;
+    border: none;
+    color: $primary-light;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+    font-size: inherit;
+    &:hover {
+      color: $primary-dark;
+    }
+  }
+}
+
+:host ::ng-deep .modal-footer .btn-primary {
+  background: linear-gradient(135deg, $primary-light, $primary-dark);
+  border: none;
+  &:hover {
+    background: linear-gradient(135deg, $accent, $primary-light);
+  }
+}

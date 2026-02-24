@@ -101,6 +101,22 @@
                 </a>
               }
             </div>
+            
+            <div class="nav-item nav-parent" (click)="togglePersonalCollapse()">
+              <i class="fas fa-heartbeat" style="color: #e91e63;"></i>
+              <span class="nav-text">Personal</span>
+              <span class="nav-badge">{{ personalMenuItems.length }}</span>
+              <span class="nav-arrow" [class.rotated]="!isPersonalCollapsed">▼</span>
+            </div>
+            
+            <div class="nav-submenu" [class.collapsed]="isPersonalCollapsed">
+              @for (item of personalMenuItems; track item.route) {
+                <a class="nav-item nav-subitem" [routerLink]="item.route">
+                  <i class="fas" [ngClass]="item.icon" [style.color]="item.iconColor"></i>
+                  <span class="nav-text">{{ item.label }}</span>
+                </a>
+              }
+            </div>
           </div>
         </div>
       </nav>

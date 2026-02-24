@@ -10,7 +10,8 @@ function isProtectedUrl(url: string): boolean {
   return path === '/' ||
     path.startsWith('/dashboard') ||
     path.startsWith('/gestion') ||
-    path.startsWith('/analisis');
+    path.startsWith('/analisis') ||
+    path.startsWith('/personal');
 }
 
 export const authGuard: CanActivateFn = (route, state) => {

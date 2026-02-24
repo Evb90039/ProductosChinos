@@ -21,6 +21,7 @@ export class LayoutComponent implements OnInit {
   isGestionCollapsed = false; // Control del colapso de Gestión
   isAnalisisCollapsed = true; // Control del colapso de Análisis
   isOperacionesCollapsed = true; // Control del colapso de Operaciones
+  isPersonalCollapsed = true; // Control del colapso de Personal
 
   /** Productos totales y productos vendidos para el footer del sidebar. */
   readonly statsProductos$ = inject(ProductosService).obtenerEstadisticasProductos();
@@ -43,8 +44,13 @@ export class LayoutComponent implements OnInit {
     { route: '/catalogo', icon: 'fa-book', iconColor: '#009688', label: 'Catálogo' },
   ];
 
+  /** Ítems del menú Personal. */
+  readonly personalMenuItems: { route: string; icon: string; iconColor: string; label: string }[] = [
+    { route: '/personal', icon: 'fa-heartbeat', iconColor: '#e91e63', label: 'Control déficit' },
+  ];
+
   /** Secciones principales con submenú: cada una cuenta como 1 en el badge. Al agregar una sección aquí, el conteo se actualiza solo. */
-  private readonly principalSections = [this.gestionMenuItems, this.analisisMenuItems, this.operacionesMenuItems] as const;
+  private readonly principalSections = [this.gestionMenuItems, this.analisisMenuItems, this.operacionesMenuItems, this.personalMenuItems] as const;
 
   /** Cantidad de secciones en Principal (Gestión = 1, Análisis = 1, etc.). */
   get principalMenuCount(): number {
@@ -74,19 +80,29 @@ export class LayoutComponent implements OnInit {
   toggleGestionCollapse(): void {
     this.isAnalisisCollapsed = true;
     this.isOperacionesCollapsed = true;
+    this.isPersonalCollapsed = true;
     this.isGestionCollapsed = !this.isGestionCollapsed;
   }
 
   toggleAnalisisCollapse(): void {
     this.isGestionCollapsed = true;
     this.isOperacionesCollapsed = true;
+    this.isPersonalCollapsed = true;
     this.isAnalisisCollapsed = !this.isAnalisisCollapsed;
   }
 
   toggleOperacionesCollapse(): void {
     this.isGestionCollapsed = true;
     this.isAnalisisCollapsed = true;
+    this.isPersonalCollapsed = true;
     this.isOperacionesCollapsed = !this.isOperacionesCollapsed;
+  }
+
+  togglePersonalCollapse(): void {
+    this.isGestionCollapsed = true;
+    this.isAnalisisCollapsed = true;
+    this.isOperacionesCollapsed = true;
+    this.isPersonalCollapsed = !this.isPersonalCollapsed;
   }
 
   async logout(): Promise<void> {

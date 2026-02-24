@@ -1,0 +1,22 @@
+# Reglas de Firestore para que la tabla de déficit y el perfil TDEE carguen y guarden
+
+En Firebase Console → Firestore Database → Reglas, asegúrate de tener algo como:
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ... tus otras reglas (empleados, productos, etc.) ...
+
+    // Registros diarios de déficit (cualquier usuario autenticado)
+    match /deficit_registros/{document=**} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Perfil TDEE (altura, edad, sexo) — un documento por usuario, solo su propio documento
+    match /deficit_perfil/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+
+Después de publicar las reglas, la tabla y los datos para calcular TDEE cargarán al entrar a Personal.
