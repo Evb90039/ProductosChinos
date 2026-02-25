@@ -1,4 +1,5 @@
 // --- Catálogo público — Diseño nivel Mercado Libre / Amazon ---
+@use "sass:color";
 
 $header-bg: #ffe600;
 $header-text: #333;
@@ -344,7 +345,7 @@ $radius: 8px;
 
   .store-filter-btn:hover &,
   .store-filter-btn:focus-visible & {
-    color: darken($accent, 6%);
+    color: color.adjust($accent, $lightness: -6%);
   }
 }
 
