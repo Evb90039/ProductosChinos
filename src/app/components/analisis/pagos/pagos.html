@@ -1,0 +1,103 @@
+<div class="pagos-container">
+  <div class="page-header">
+    <div class="header-content">
+      <i class="fab fa-paypal" style="color: #003087; font-size: 2rem; margin-right: 1rem;"></i>
+      <div>
+        <h1 class="page-title">Pagos PayPal</h1>
+        <p class="page-subtitle">Consulta las transacciones recibidas en tu cuenta PayPal</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <div class="filtros-card">
+      <h2 class="section-title">Rango de fechas</h2>
+      <p class="text-muted small">Máximo 31 días por consulta. Los datos pueden tardar hasta 3 horas en aparecer.</p>
+      <div class="filtros-row">
+        <div class="mb-3">
+          <label class="form-label">Desde</label>
+          <input type="datetime-local" class="form-control" [(ngModel)]="startDate" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Hasta</label>
+          <input type="datetime-local" class="form-control" [(ngModel)]="endDate" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Registros por página</label>
+          <select class="form-select" [(ngModel)]="pageSize">
+            <option [ngValue]="25">25</option>
+            <option [ngValue]="50">50</option>
+            <option [ngValue]="100">100</option>
+            <option [ngValue]="250">250</option>
+            <option [ngValue]="500">500</option>
+          </select>
+        </div>
+        <div class="mb-3 d-flex align-items-end">
+          <button type="button" class="btn btn-primary" (click)="consultar()" [disabled]="loading">
+            <i class="fas fa-search me-1"></i> Consultar pagos
+          </button>
+        </div>
+      </div>
+    </div>
+
+    @if (error) {
+      <div class="alert alert-danger" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
+      </div>
+    }
+
+    @if (loading) {
+      <app-spinner mode="overlay" message="Consultando PayPal..." size="lg"></app-spinner>
+    }
+
+    @if (data && !loading) {
+      <div class="table-section">
+        <h2 class="section-title">Transacciones</h2>
+        <p class="text-muted">
+          Página {{ currentPage }} de {{ totalPages }} — {{ totalItems }} registro(s) en total
+        </p>
+
+        @if (details.length === 0) {
+          <div class="empty-state">
+            <i class="fab fa-paypal" style="color: #cbd5e1; font-size: 3rem; margin-bottom: 0.75rem;"></i>
+            <p>No hay transacciones en el rango seleccionado.</p>
+          </div>
+        } @else {
+          <div class="table-responsive">
+            <table class="table table-hover pagos-table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>ID</th>
+                  <th>Pagador</th>
+                  <th>Concepto</th>
+                  <th class="text-end">Monto</th>
+                  <th class="text-end">Comisión</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (t of details; track t.transaction_info?.transaction_id ?? $index) {
+                  <tr>
+                    <td>{{ formatDate(t.transaction_info?.transaction_initiation_date) }}</td>
+                    <td><code class="small">{{ t.transaction_info?.transaction_id ?? '—' }}</code></td>
+                    <td>
+                      <span>{{ payerName(t) }}</span>
+                      @if (t.payer_info?.email_address) {
+                        <br><small class="text-muted">{{ t.payer_info?.email_address }}</small>
+                      }
+                    </td>
+                    <td>{{ t.transaction_info?.transaction_subject ?? '—' }}</td>
+                    <td class="text-end">{{ formatMoney(t.transaction_info?.transaction_amount?.currency_code, t.transaction_info?.transaction_amount?.value) }}</td>
+                    <td class="text-end text-muted">{{ formatMoney(t.transaction_info?.fee_amount?.currency_code, t.transaction_info?.fee_amount?.value) }}</td>
+                    <td><span class="badge bg-secondary">{{ t.transaction_info?.transaction_status ?? '—' }}</span></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

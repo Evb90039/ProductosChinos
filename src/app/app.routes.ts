@@ -59,6 +59,11 @@ export const routes: Routes = [
         title: 'Inversiones - Productos Chinos'
       },
       {
+        path: 'analisis/pagos',
+        loadComponent: () => import('./components/analisis/pagos/pagos').then(m => m.PagosComponent),
+        title: 'Pagos PayPal - Productos Chinos'
+      },
+      {
         path: 'personal',
         loadComponent: () => import('./components/personal/personal').then(m => m.PersonalComponent),
         title: 'Control déficit - Productos Chinos'

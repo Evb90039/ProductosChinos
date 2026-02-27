@@ -4,10 +4,18 @@
 [build]
   command = "npm run build:netlify"
   publish = "dist/ProductosChinos/browser"
+  functions = "netlify/functions"
 
 
 
-# Redirección SPA: todas las rutas al index.html
+# Las peticiones a funciones no deben ir al SPA (evitar 404)
+[[redirects]]
+  from = "/.netlify/functions/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+  force = true
+
+# Redirección SPA: el resto de rutas al index.html
 [[redirects]]
   from = "/*"
   to = "/index.html"

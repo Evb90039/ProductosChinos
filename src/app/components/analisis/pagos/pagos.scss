@@ -1,0 +1,71 @@
+.pagos-container {
+  padding: 0;
+  background: transparent;
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid rgba(0, 48, 135, 0.2);
+
+    .header-content {
+      display: flex;
+      align-items: center;
+
+      .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #003087;
+        margin: 0 0 0.25rem 0;
+      }
+
+      .page-subtitle {
+        color: #64748b;
+        margin: 0;
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .content-section {
+    .filtros-card {
+      background: linear-gradient(135deg, rgba(0, 48, 135, 0.06), rgba(0, 121, 194, 0.06));
+      border: 1px solid rgba(0, 48, 135, 0.2);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .filtros-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .table-section {
+      margin-top: 1.5rem;
+    }
+
+    .pagos-table {
+      font-size: 0.9rem;
+      code {
+        font-size: 0.8rem;
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #64748b;
+    }
+  }
+}

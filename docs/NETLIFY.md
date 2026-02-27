@@ -46,6 +46,18 @@ En la configuración del sitio:
 | `CLOUDINARY_API_SECRET` | Solo si lo usas en el backend |
 | `CLOUDINARY_DELETE_ENDPOINT` | URL para borrar imágenes si la usas |
 
+### PayPal (opcionales: para ver pagos en Análisis → Pagos PayPal)
+
+En [developer.paypal.com](https://developer.paypal.com) crea una app REST y activa el permiso **Transaction Search**. Luego añade en Netlify:
+
+| Variable | Descripción |
+|----------|-------------|
+| `PAYPAL_CLIENT_ID` | Client ID de la app REST de PayPal |
+| `PAYPAL_CLIENT_SECRET` | Secret de la app (no lo expongas en el frontend) |
+| `PAYPAL_MODE` | `sandbox` (pruebas) o `live` (producción). Por defecto: sandbox |
+
+La función serverless `netlify/functions/paypal-transactions.js` usa estas variables para consultar la API de transacciones. Puede tardar hasta 9 horas en activarse el permiso Transaction Search tras añadirlo en la app.
+
 3. Marca **Save** y, si quieres, **Encrypt** para valores sensibles.
 
 ---

@@ -37,6 +37,7 @@ export class LayoutComponent implements OnInit {
   readonly analisisMenuItems: { route: string; icon: string; iconColor: string; label: string }[] = [
     { route: '/analisis/reportes', icon: 'fa-file-alt', iconColor: '#795548', label: 'Reportes' },
     { route: '/analisis/inversiones', icon: 'fa-chart-line', iconColor: '#2196F3', label: 'Inversiones' },
+    { route: '/analisis/pagos', icon: 'fab fa-paypal', iconColor: '#003087', label: 'Pagos PayPal' },
   ];
 
   /** Ítems del submenú Operaciones. */
