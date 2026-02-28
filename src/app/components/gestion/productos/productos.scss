@@ -7,7 +7,8 @@
   flex-direction: column;
   height: calc(100vh - 70px - 2rem);
   min-height: 0;
-  overflow: hidden;
+  overflow-x: visible;
+  overflow-y: hidden;
 
   .page-header {
     display: flex;
@@ -148,8 +149,9 @@
       .table-body-scroll {
         flex: 1;
         min-height: 0;
-        overflow: auto;
-        -webkit-overflow-scrolling: touch;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
       }
 
       .table-header {
@@ -270,235 +272,256 @@
         }
       }
 
-      .product-list {
-        background: white;
-        border: 1px solid #e2e8f0;
-        border-radius: 1rem;
-        overflow-x: auto;
+      /* ——— Tabla Bootstrap con colores de la página (dorado/ámbar) ——— */
+      /* El scroll va en el wrapper para que el encabezado sticky funcione */
+      .productos-table-wrapper {
+        flex: 1;
+        min-height: 0;
+        overflow: auto;
         -webkit-overflow-scrolling: touch;
-        /* Ancho mínimo para que las columnas no se aplasten; si no cabe, aparece scroll horizontal */
-        min-width: min(100%, 1180px);
+        touch-action: pan-x pan-y;
+        border-radius: 0.75rem;
+        border: 2px solid rgba(218, 165, 32, 0.35);
+        box-shadow: 0 2px 12px rgba(218, 165, 32, 0.12);
+        background: #fff;
       }
 
-      .product-list-header,
-      .product-list-row {
-        display: grid;
-        /* Imagen, Producto, Categoría, Vendedor, Precios, Ganancia, Estado, Acciones */
-        grid-template-columns: 70px minmax(180px, 2fr) minmax(100px, 120px) minmax(150px, 180px) minmax(100px, 110px) minmax(100px, 115px) minmax(96px, 110px) minmax(108px, 118px) minmax(100px, 120px) minmax(85px, 100px) 90px;
-        gap: 0.75rem 1.25rem;
-        align-items: center;
-        padding: 0.75rem 1rem;
-        min-height: 56px;
-        min-width: 1180px;
+      .productos-table-wrapper .productos-table {
+        min-width: 1100px;
+        font-size: 0.875rem;
       }
 
-      .product-list-header {
+      .productos-table .productos-thead {
+        border-bottom: 2px solid rgba(218, 165, 32, 0.4);
+      }
+
+      .productos-table .productos-thead th {
         position: sticky;
         top: 0;
-        z-index: 1;
-        background: #f1f5f9;
-        font-size: 0.75rem;
+        z-index: 20;
+        background: #faf0c8 !important;
+        color: #8B6914;
         font-weight: 700;
+        font-size: 0.75rem;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: #64748b;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        letter-spacing: 0.04em;
+        padding: 0.75rem 0.5rem;
+        border-bottom: 2px solid rgba(218, 165, 32, 0.4);
+        border-right: 1px solid rgba(218, 165, 32, 0.2);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        text-align: center;
       }
 
-      /* Permitir salto de línea en encabezados largos para evitar solapamiento */
-      .product-list-header .col-dinero-rembolsado,
-      .product-list-header .col-precio-neto,
-      .product-list-header .col-precio-pagina,
-      .product-list-header .col-precio-compra,
-      .product-list-header .col-ganancia {
-        white-space: normal;
-        word-break: break-word;
-        line-height: 1.2;
+      .productos-table .productos-thead th:last-child {
+        border-right: none;
       }
 
-      .product-list-header .col-imagen,
-      .product-list-header .col-nombre,
-      .product-list-header .col-vendedor {
-        white-space: normal;
-        word-break: break-word;
+      .productos-table tbody tr {
+        border-bottom: 1px solid rgba(218, 165, 32, 0.12);
       }
 
-      .product-list-row {
-        border-top: 1px solid #e2e8f0;
-        font-size: 0.875rem;
-
-        &:hover {
-          background: #fafafa;
-        }
-
-        .col-nombre {
-          min-width: 0;
-          word-wrap: break-word;
-          overflow-wrap: break-word;
-          word-break: break-word;
-          white-space: normal;
-          line-height: 1.35;
-
-          strong {
-            color: #2c3e50;
-          }
-        }
-
-        .col-categoria .categoria-tag {
-          display: inline-block;
-          font-size: 0.75rem;
-          padding: 0.2rem 0.5rem;
-          background: #f1f5f9;
-          color: #475569;
-          border-radius: 0.35rem;
-          white-space: nowrap;
-          max-width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .col-vendedor {
-          display: flex;
-          flex-direction: column;
-          gap: 0.15rem;
-          min-width: 0;
-          word-wrap: break-word;
-          overflow-wrap: break-word;
-          word-break: break-word;
-          white-space: normal;
-
-          .text-muted {
-            font-size: 0.75rem;
-            color: #94a3b8;
-          }
-        }
-
-        .col-precio-compra,
-        .col-dinero-rembolsado,
-        .col-precio-neto,
-        .col-precio-pagina {
-          font-weight: 600;
-
-          .text-muted {
-            color: #94a3b8;
-            font-weight: 400;
-          }
-        }
-
-        .col-precio-compra {
-          color: #64748b;
-        }
-
-        .col-dinero-rembolsado {
-          color: #2e7d32;
-        }
-
-        .col-precio-neto {
-          color: #1565c0;
-        }
-
-        .col-precio-pagina {
-          color: #B8860B;
-        }
-
-        .col-ganancia {
-          display: flex;
-          flex-direction: column;
-          gap: 0.15rem;
-          font-weight: 600;
-
-          .ganancia-monto {
-            color: #2e7d32;
-          }
-
-          .ganancia-pct {
-            font-size: 0.8rem;
-            color: #64748b;
-            font-weight: 500;
-          }
-
-          .text-muted {
-            color: #94a3b8;
-            font-weight: 400;
-          }
-        }
-
-        .col-acciones {
-          display: flex;
-          gap: 0.35rem;
-        }
+      .productos-table tbody tr:nth-child(odd) td {
+        background: #fff;
       }
 
-      .product-list-thumb {
-        width: 48px;
-        height: 48px;
-        object-fit: cover;
-        border-radius: 0.5rem;
-        display: block;
+      .productos-table tbody tr:nth-child(even) td {
+        background: rgba(255, 215, 0, 0.06);
       }
 
-      .product-list-thumb-placeholder {
-        width: 48px;
-        height: 48px;
-        border-radius: 0.5rem;
-        background: #f1f5f9;
+      .productos-table tbody tr:hover td {
+        background: rgba(254, 245, 212, 0.5) !important;
+      }
+
+      .productos-table tbody td {
+        border-right: 1px solid rgba(218, 165, 32, 0.1);
+        vertical-align: middle;
+        padding: 0.5rem;
+      }
+
+      .productos-table tbody td.col-nombre {
+        vertical-align: top;
+        min-width: 140px;
+        min-height: 3.5rem;
+        padding: 0.5rem;
+      }
+
+      .productos-table .col-nombre-inner {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.25rem;
+        flex-direction: column;
+        min-height: 2.75rem;
+        height: 100%;
+        gap: 0.25rem;
       }
 
-      .estado-tag {
+      .productos-table .col-nombre-texto {
+        flex: 1;
+        min-height: 0;
+        line-height: 1.35;
+      }
+
+      .productos-table .col-nombre .btn-ver-mas {
+        margin-top: auto;
+        align-self: flex-end;
+        flex-shrink: 0;
+      }
+
+      .productos-table tbody td:last-child {
+        border-right: none;
+      }
+
+      .productos-table .col-precio-compra {
+        color: #64748b;
+        font-weight: 600;
+      }
+
+      .productos-table .col-rembolsado {
+        color: #2e7d32;
+        font-weight: 600;
+      }
+
+      .productos-table .col-precio-neto {
+        color: #1565c0;
+        font-weight: 600;
+      }
+
+      .productos-table .col-precio-pagina {
+        color: #B8860B;
+        font-weight: 600;
+      }
+
+      .productos-table .col-ganancia {
+        font-weight: 600;
+      }
+
+      .productos-table .col-ganancia .d-block {
+        color: #2e7d32;
+      }
+
+      .productos-table .col-ganancia .small {
+        color: #64748b;
+        font-weight: 500;
+      }
+
+      .productos-table .col-ganancia.ganancia-negativa .d-block,
+      .productos-table .col-ganancia.ganancia-negativa .small {
+        color: #c62828 !important;
+      }
+
+      .productos-table .badge-categoria {
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(218, 165, 32, 0.15)) !important;
+        color: #8B6914;
+        border: 1px solid rgba(218, 165, 32, 0.3);
+        font-size: 0.7rem;
+        font-weight: 600;
+      }
+
+      .productos-table .col-estado .estado-badges {
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .productos-table .badge-estado {
         font-size: 0.7rem;
         font-weight: 600;
         padding: 0.25rem 0.5rem;
-        border-radius: 0.35rem;
-
-        &.disponible {
-          background: rgba(76, 175, 80, 0.12);
-          color: #2e7d32;
-        }
-
-        &.apartado {
-          background: rgba(255, 152, 0, 0.12);
-          color: #e65100;
-        }
-
-        &.vendido {
-          background: rgba(158, 158, 158, 0.2);
-          color: #616161;
-        }
       }
 
-      .btn-icon {
-        width: 32px;
-        height: 32px;
-        border: none;
-        background: #f1f5f9;
-        border-radius: 0.35rem;
-        cursor: pointer;
-        display: flex;
+      .productos-table .badge-disponible {
+        background: rgba(76, 175, 80, 0.15) !important;
+        color: #2e7d32;
+        border: 1px solid rgba(76, 175, 80, 0.3);
+      }
+
+      .productos-table .badge-apartado {
+        background: rgba(255, 152, 0, 0.2) !important;
+        color: #e65100;
+        border: 1px solid rgba(255, 152, 0, 0.4);
+      }
+
+      .productos-table .badge-vendido {
+        background: rgba(158, 158, 158, 0.2) !important;
+        color: #616161;
+        border: 1px solid rgba(158, 158, 158, 0.3);
+      }
+
+      .productos-table .badge-regalado {
+        background: rgba(156, 39, 176, 0.15) !important;
+        color: #7b1fa2;
+        border: 1px solid rgba(156, 39, 176, 0.35);
+      }
+
+      .productos-table .badge-sin-resena {
+        background: rgba(255, 152, 0, 0.15) !important;
+        color: #e65100;
+        border: 1px solid rgba(255, 152, 0, 0.35);
+      }
+
+      .productos-table .badge-sin-rembolso {
+        background: rgba(33, 150, 243, 0.15) !important;
+        color: #1565c0;
+        border: 1px solid rgba(33, 150, 243, 0.35);
+      }
+
+      .productos-table .productos-acciones .btn-editar {
+        color: #B8860B;
+        border-color: rgba(218, 165, 32, 0.5);
+        background: rgba(255, 215, 0, 0.08);
+      }
+
+      .productos-table .productos-acciones .btn-editar:hover {
+        background: linear-gradient(135deg, #DAA520, #B8860B);
+        border-color: #B8860B;
+        color: #fff;
+      }
+
+      .productos-table .productos-acciones .btn-eliminar {
+        color: #c62828;
+        border-color: rgba(198, 40, 40, 0.4);
+        background: rgba(198, 40, 40, 0.06);
+      }
+
+      .productos-table .productos-acciones .btn-eliminar:hover {
+        background: #c62828;
+        border-color: #c62828;
+        color: #fff;
+      }
+
+      .productos-thumb {
+        width: 48px;
+        height: 48px;
+        object-fit: cover;
+        border-radius: 0.4rem;
+        border: 1px solid rgba(218, 165, 32, 0.2);
+      }
+
+      .productos-thumb-placeholder {
+        width: 48px;
+        height: 48px;
+        border-radius: 0.4rem;
+        background: linear-gradient(135deg, #fef9e7, #faf0c8);
+        border: 1px solid rgba(218, 165, 32, 0.2);
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-        color: #64748b;
-        transition: all 0.2s;
+        font-size: 1.1rem;
+        color: #94a3b8 !important;
+      }
 
-        &:hover {
-          background: #e2e8f0;
-        }
+      .productos-table-wrapper .btn-ver-mas {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #B8860B;
+        text-decoration: none;
+      }
 
-        &:first-child:hover {
-          background: #3b82f6;
-          color: white;
-        }
-
-        &:last-child:hover {
-          background: #ef4444;
-          color: white;
-        }
+      .productos-table-wrapper .btn-ver-mas:hover {
+        color: #8B6914;
+        text-decoration: underline;
       }
     }
-  }
 
   .pagination-footer {
     flex-shrink: 0;
@@ -543,10 +566,12 @@
       font-weight: 500;
     }
   }
+  }
 }
 
-/* ——— Carrusel de estadísticas: 2 tarjetas a la vez (móvil y tablet) ——— */
-@media (max-width: 991px) {
+/* ——— Carrusel de estadísticas (móvil, tablet) ——— */
+/* Vista en tarjetas hasta 1600px: solo pantallas muy anchas ven la tabla; el resto ve tarjetas completas */
+@media (max-width: 1600px) {
   .productos-container .stats-grid {
     display: flex !important;
     grid-template-columns: unset;
@@ -614,12 +639,12 @@
   .productos-container .stats-grid .stat-info h3 {
     font-size: 1.1rem;
   }
+
 }
 
 /* ——— Móvil: UX/UI mejorado ——— */
 @media (max-width: 767px) {
   .productos-container {
-    /* Dejar de usar altura fija: la página entera hace scroll y se llega a artículos y paginación */
     height: auto;
     min-height: auto;
     overflow: visible;
@@ -642,6 +667,22 @@
     min-height: auto;
     overflow: visible;
     -webkit-overflow-scrolling: auto;
+  }
+
+  /* Encabezado de la tabla: siempre visible y pegado debajo del navbar en móvil */
+  .productos-container .productos-table .productos-thead {
+    display: table-header-group;
+  }
+
+  .productos-container .productos-table .productos-thead th {
+    position: sticky;
+    top: 56px;
+    z-index: 25;
+    background: #faf0c8 !important;
+    display: table-cell;
+    font-size: 0.7rem;
+    padding: 0.5rem 0.35rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   /* Header: título y botón en columna para que "Nuevo Producto" no se corte */

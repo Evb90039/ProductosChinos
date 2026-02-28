@@ -134,102 +134,108 @@
         }
 
         @if (vista.totalFiltered > 0) {
-          <div class="product-list">
-            <div class="product-list-header">
-              <span class="col-imagen">Imagen</span>
-              <span class="col-nombre">Producto</span>
-              <span class="col-categoria">Categoría</span>
-              <span class="col-vendedor">Vendedor / Tienda</span>
-              <span class="col-precio-compra">Precio compra</span>
-              <span class="col-dinero-rembolsado" title="Dinero rembolsado">Rembolsado</span>
-              <span class="col-precio-neto">Precio neto</span>
-              <span class="col-precio-pagina">Precio página</span>
-              <span class="col-ganancia">Ganancia · %</span>
-              <span class="col-estado">Estado</span>
-              <span class="col-acciones">Acciones</span>
-            </div>
-            @for (p of vista.paginated; track p.id) {
-              <div class="product-list-row">
-                <div class="col-imagen">
-                  @if (imagenPrincipal(p); as src) {
-                    <img [src]="src" alt="" class="product-list-thumb">
-                  } @else {
-                    <div class="product-list-thumb-placeholder">
-                      <i class="fas fa-image" style="color: #94a3b8;"></i>
-                    </div>
-                  }
-                </div>
-                <div class="col-nombre">
-                  <strong>{{ p.nombreProducto }}</strong>
-                </div>
-                <div class="col-categoria">
-                  <span class="categoria-tag">{{ categoriaLabel(p.categoria) }}</span>
-                </div>
-                <div class="col-vendedor">
-                  <span>{{ p.nombreVendedor }}</span>
-                  <span class="text-muted">{{ p.tienda }}</span>
-                </div>
-                <div class="col-precio-compra">
-                  @if (p.precioCompra != null) {
-                    <span>${{ p.precioCompra | number:'1.2-2' }}</span>
-                  } @else {
-                    <span class="text-muted">—</span>
-                  }
-                </div>
-                <div class="col-dinero-rembolsado">
-                  @if (p.dineroRembolsado != null) {
-                    <span>${{ p.dineroRembolsado | number:'1.2-2' }}</span>
-                  } @else {
-                    <span class="text-muted">—</span>
-                  }
-                </div>
-                <div class="col-precio-neto">
-                  @if (p.precioCompra != null || p.dineroRembolsado != null) {
-                    <span>${{ ((p.precioCompra ?? 0) - (p.dineroRembolsado ?? 0)) | number:'1.2-2' }}</span>
-                  } @else {
-                    <span class="text-muted">—</span>
-                  }
-                </div>
-                <div class="col-precio-pagina">
-                  @if (p.precioPagina != null) {
-                    <span>${{ p.precioPagina | number:'1.2-2' }}</span>
-                  } @else {
-                    <span class="text-muted">—</span>
-                  }
-                </div>
-                <div class="col-ganancia">
-                  @let precioNeto = (p.precioCompra ?? 0) - (p.dineroRembolsado ?? 0);
-                  @let ganancia = (p.precioPagina ?? 0) - precioNeto;
-                  @if (p.precioPagina != null) {
-                    <span class="ganancia-monto">${{ ganancia | number:'1.2-2' }}</span>
-                    @if (precioNeto !== 0) {
-                      <span class="ganancia-pct">{{ (ganancia / precioNeto * 100) | number:'1.2-2' }}%</span>
-                    } @else {
-                      <span class="text-muted">—</span>
-                    }
-                  } @else {
-                    <span class="text-muted">—</span>
-                  }
-                </div>
-                <div class="col-estado">
-                  @if (p.vendido) {
-                    <span class="estado-tag vendido">Vendido</span>
-                  } @else if (p.apartado) {
-                    <span class="estado-tag apartado">Apartado</span>
-                  } @else {
-                    <span class="estado-tag disponible">Disponible</span>
-                  }
-                </div>
-                <div class="col-acciones">
-                  <button type="button" class="btn-icon" title="Editar" (click)="editarProducto(p)">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button type="button" class="btn-icon" title="Eliminar" (click)="eliminarProducto(p.id!)">
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </div>
-              </div>
-            }
+          <div class="table-responsive productos-table-wrapper">
+            <table class="table table-striped table-hover table-bordered align-middle mb-0 table-sm productos-table">
+              <thead class="productos-thead">
+                <tr>
+                  <th scope="col" class="text-center">Imagen</th>
+                  <th scope="col" class="text-center">Producto</th>
+                  <th scope="col" class="text-center">Categoría</th>
+                  <th scope="col" class="text-center">Vendedor / Tienda</th>
+                  <th scope="col" class="text-center">Precio compra</th>
+                  <th scope="col" class="text-center" title="Dinero rembolsado">Rembolsado</th>
+                  <th scope="col" class="text-center">Precio neto</th>
+                  <th scope="col" class="text-center">Precio página</th>
+                  <th scope="col" class="text-center">Ganancia · %</th>
+                  <th scope="col" class="text-center">Estado</th>
+                  <th scope="col" class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (p of vista.paginated; track p.id) {
+                  <tr>
+                    <td class="text-center">
+                      @if (imagenPrincipal(p); as src) {
+                        <img [src]="src" alt="" class="productos-thumb">
+                      } @else {
+                        <div class="productos-thumb-placeholder">
+                          <i class="fas fa-image text-secondary"></i>
+                        </div>
+                      }
+                    </td>
+                    <td class="col-nombre">
+                      <div class="col-nombre-inner">
+                        @if (nombreMuyLargo(p.nombreProducto)) {
+                          @if (isNombreExpandido(p.id)) {
+                            <span class="col-nombre-texto"><strong>{{ p.nombreProducto }}</strong></span>
+                            <button type="button" class="btn btn-sm btn-link btn-ver-mas p-0" (click)="toggleNombreExpandido(p.id)">Ver menos</button>
+                          } @else {
+                            <span class="col-nombre-texto"><strong>{{ truncateNombre(p.nombreProducto, maxNombreLength) }}...</strong></span>
+                            <button type="button" class="btn btn-sm btn-link btn-ver-mas p-0" (click)="toggleNombreExpandido(p.id)">Ver más</button>
+                          }
+                        } @else {
+                          <span class="col-nombre-texto"><strong>{{ p.nombreProducto }}</strong></span>
+                        }
+                      </div>
+                    </td>
+                    <td class="text-center"><span class="badge badge-categoria">{{ categoriaLabel(p.categoria) }}</span></td>
+                    <td class="text-center small"><span>{{ p.nombreVendedor }}</span><span class="text-muted"> / {{ p.tienda }}</span></td>
+                    <td class="text-center col-precio-compra">
+                      @if (p.precioCompra != null) { ${{ p.precioCompra | number:'1.2-2' }} } @else { <span class="text-muted">—</span> }
+                    </td>
+                    <td class="text-center col-rembolsado">
+                      @if (p.dineroRembolsado != null) { ${{ p.dineroRembolsado | number:'1.2-2' }} } @else { <span class="text-muted">—</span> }
+                    </td>
+                    <td class="text-center col-precio-neto">
+                      @if (p.precioCompra != null || p.dineroRembolsado != null) {
+                        ${{ ((p.precioCompra ?? 0) - (p.dineroRembolsado ?? 0)) | number:'1.2-2' }}
+                      } @else { <span class="text-muted">—</span> }
+                    </td>
+                    <td class="text-center col-precio-pagina">
+                      @if (p.precioPagina != null) { ${{ p.precioPagina | number:'1.2-2' }} } @else { <span class="text-muted">—</span> }
+                    </td>
+                    <td class="text-center col-ganancia" [class.ganancia-negativa]="((p.precioPagina ?? 0) - ((p.precioCompra ?? 0) - (p.dineroRembolsado ?? 0))) < 0">
+                      @let precioNeto = (p.precioCompra ?? 0) - (p.dineroRembolsado ?? 0);
+                      @let ganancia = (p.precioPagina ?? 0) - precioNeto;
+                      @if (p.precioPagina != null) {
+                        <span class="d-block">${{ ganancia | number:'1.2-2' }}</span>
+                        @if (precioNeto !== 0) {
+                          <span class="small">{{ (ganancia / precioNeto * 100) | number:'1.2-2' }}%</span>
+                        } @else { <span class="text-muted">—</span> }
+                      } @else { <span class="text-muted">—</span> }
+                    </td>
+                    <td class="text-center col-estado">
+                      <span class="estado-badges">
+                        @if (p.vendido) {
+                          <span class="badge badge-estado badge-vendido">Vendido</span>
+                        }
+                        @if (p.apartado) {
+                          <span class="badge badge-estado badge-apartado">Apartado</span>
+                        }
+                        @if (p.regalado) {
+                          <span class="badge badge-estado badge-regalado">Regalado</span>
+                        }
+                        @if (!p.resenado) {
+                          <span class="badge badge-estado badge-sin-resena">Sin reseña</span>
+                        }
+                        @if (p.resenado && (p.dineroRembolsado ?? 0) === 0) {
+                          <span class="badge badge-estado badge-sin-rembolso">Sin rembolso</span>
+                        }
+                        @if (!p.vendido && !p.apartado && !p.regalado && (p.resenado && (p.dineroRembolsado ?? 0) !== 0)) {
+                          <span class="badge badge-estado badge-disponible">Disponible</span>
+                        }
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <div class="btn-group btn-group-sm productos-acciones">
+                        <button type="button" class="btn btn-editar" title="Editar" (click)="editarProducto(p)"><i class="fas fa-edit"></i></button>
+                        <button type="button" class="btn btn-eliminar" title="Eliminar" (click)="eliminarProducto(p.id!)"><i class="fas fa-trash"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
           </div>
         }
         </div>

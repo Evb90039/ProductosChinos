@@ -39,7 +39,11 @@ export class ProductosComponent {
   readonly currentPage = signal(1);
   readonly pageSize = 8;
   readonly sinCategoriaLabel = SIN_CATEGORIA_LABEL;
+  /** IDs de productos con el nombre expandido ("Ver más" pulsado). */
+  readonly expandedNombreIds = signal<Set<string>>(new Set());
   private readonly refresh$ = new Subject<void>();
+
+  readonly maxNombreLength = 38;
 
   readonly productos$ = this.refresh$.pipe(
     startWith(undefined),
@@ -195,14 +199,44 @@ export class ProductosComponent {
     return categoria?.trim() || this.sinCategoriaLabel;
   }
 
+  /** Trunca el nombre del producto a un máximo de caracteres. */
+  truncateNombre(nombre: string | undefined | null, max: number): string {
+    const n = nombre ?? '';
+    return n.length <= max ? n : n.slice(0, max);
+  }
+
+  /** Indica si el nombre del producto supera el límite y debe mostrar "Ver más". */
+  nombreMuyLargo(nombre: string | undefined | null): boolean {
+    return (nombre?.length ?? 0) > this.maxNombreLength;
+  }
+
+  /** Indica si el producto tiene el nombre expandido. */
+  isNombreExpandido(id: string | undefined): boolean {
+    return id != null && this.expandedNombreIds().has(id);
+  }
+
+  /** Alterna entre mostrar nombre completo o truncado. */
+  toggleNombreExpandido(id: string | undefined): void {
+    if (id == null) return;
+    const set = new Set(this.expandedNombreIds());
+    if (set.has(id)) set.delete(id);
+    else set.add(id);
+    this.expandedNombreIds.set(set);
+  }
+
   setPage(page: number) {
     this.currentPage.set(page);
-    // Llevar el scroll al inicio de la tabla al cambiar de página
-    const el = this.scrollContainerRef?.nativeElement ?? this.tableSectionRef?.nativeElement;
-    if (el) {
-      el.scrollTop = 0;
-    }
-    this.tableSectionRef?.nativeElement?.scrollIntoView?.({ block: 'start', behavior: 'smooth' });
+    // Scroll de la tabla al inicio: el contenedor con scroll es .productos-table-wrapper
+    const scrollTableToTop = () => {
+      const container = this.scrollContainerRef?.nativeElement;
+      const wrapper = container?.querySelector('.productos-table-wrapper') as HTMLElement | null;
+      if (wrapper) {
+        wrapper.scrollTop = 0;
+        wrapper.scrollLeft = 0;
+      }
+      this.tableSectionRef?.nativeElement?.scrollIntoView?.({ block: 'start', behavior: 'smooth' });
+    };
+    setTimeout(scrollTableToTop, 50);
   }
 
   /** URL de la imagen principal del producto (o null si no hay). */
