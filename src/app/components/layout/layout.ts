@@ -1,20 +1,23 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterOutlet, RouterModule } from '@angular/router';
+import { Router, RouterOutlet, RouterModule, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth';
 import { HeaderComponent } from '../../shared/components/header/header';
 import { ProductosService } from '../../services/productos.service';
+import { SpinnerComponent } from '../../shared/components/spinner/spinner';
 
 /** Ancho a partir del cual se considera "desktop" (sidebar visible por defecto). Debe coincidir con el breakpoint del sidebar en layout.scss (992px). */
 const SIDEBAR_DESKTOP_BREAKPOINT = 992;
 
 @Component({
   selector: 'app-layout',
-  imports: [CommonModule, RouterOutlet, RouterModule, HeaderComponent],
+  imports: [CommonModule, RouterOutlet, RouterModule, HeaderComponent, SpinnerComponent],
   templateUrl: './layout.html',
   styleUrl: './layout.scss',
 })
-export class LayoutComponent implements OnInit {
+export class LayoutComponent implements OnInit, OnDestroy {
   /** En móvil empieza cerrado; en desktop se abre en ngOnInit. */
   isSidebarOpen = false;
   currentUserEmail = '';
@@ -22,6 +25,11 @@ export class LayoutComponent implements OnInit {
   isAnalisisCollapsed = true; // Control del colapso de Análisis
   isOperacionesCollapsed = true; // Control del colapso de Operaciones
   isPersonalCollapsed = true; // Control del colapso de Personal
+
+  /** true mientras hay una navegación en curso (carga de ruta / chunk). */
+  navigationInProgress = false;
+
+  private routerEventsSub?: Subscription;
 
   /** Productos totales y productos vendidos para el footer del sidebar. */
   readonly statsProductos$ = inject(ProductosService).obtenerEstadisticasProductos();
@@ -67,11 +75,26 @@ export class LayoutComponent implements OnInit {
     });
   }
 
-  /** En desktop abre el sidebar por defecto; en móvil lo deja cerrado. */
+  /** En desktop abre el sidebar por defecto; en móvil lo deja cerrado. Suscribe a eventos del router para el spinner. */
   ngOnInit(): void {
     if (typeof window !== 'undefined' && window.innerWidth >= SIDEBAR_DESKTOP_BREAKPOINT) {
       this.isSidebarOpen = true;
     }
+    this.routerEventsSub = this.router.events.pipe(
+      filter(
+        (e): e is NavigationStart | NavigationEnd | NavigationCancel | NavigationError =>
+          e instanceof NavigationStart ||
+          e instanceof NavigationEnd ||
+          e instanceof NavigationCancel ||
+          e instanceof NavigationError
+      )
+    ).subscribe(event => {
+      this.navigationInProgress = event instanceof NavigationStart;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.routerEventsSub?.unsubscribe();
   }
 
   toggleSidebar(): void {

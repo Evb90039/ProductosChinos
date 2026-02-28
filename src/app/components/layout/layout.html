@@ -145,6 +145,9 @@
 
   <!-- Main Content -->
   <main class="main-content" [class.sidebar-open]="isSidebarOpen">
+    @if (navigationInProgress) {
+      <app-spinner mode="overlay" message="Cargando..." size="lg"></app-spinner>
+    }
     <div class="container-fluid">
       <div class="">
         <router-outlet></router-outlet>

@@ -22,6 +22,7 @@ import { SIN_CATEGORIA_LABEL } from '../../../constants/categorias';
 export class ProductosComponent {
   @ViewChild(ProductoModalComponent) productoModal!: ProductoModalComponent;
   @ViewChild('tableSection') tableSectionRef?: ElementRef<HTMLElement>;
+  @ViewChild('scrollContainer') scrollContainerRef?: ElementRef<HTMLElement>;
 
   private readonly storageService = inject(StorageService);
   private readonly productosService = inject(ProductosService);
@@ -196,7 +197,12 @@ export class ProductosComponent {
 
   setPage(page: number) {
     this.currentPage.set(page);
-    // Mantener la vista estable: scroll al inicio del catálogo para que la paginación no “salte”
+    // Llevar el scroll al inicio de la tabla al cambiar de página
+    const el = this.scrollContainerRef?.nativeElement ?? this.tableSectionRef?.nativeElement;
+    if (el) {
+      el.scrollTop = 0;
+    }
+    this.tableSectionRef?.nativeElement?.scrollIntoView?.({ block: 'start', behavior: 'smooth' });
   }
 
   /** URL de la imagen principal del producto (o null si no hay). */
