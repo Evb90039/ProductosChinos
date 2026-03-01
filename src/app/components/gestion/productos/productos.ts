@@ -90,6 +90,7 @@ export class ProductosComponent {
         case 'pendientes-rembolso':
           list = list.filter(
             (p) =>
+              p.resenado &&
               (p.precioCompra ?? 0) > 0 &&
               (p.dineroRembolsado ?? 0) === 0
           );
@@ -111,6 +112,7 @@ export class ProductosComponent {
       const pendientesResena = productos.filter((p) => !p.resenado).length;
       const pendientesRembolso = productos.filter(
         (p) =>
+          p.resenado &&
           (p.precioCompra ?? 0) > 0 &&
           (p.dineroRembolsado ?? 0) === 0
       ).length;
