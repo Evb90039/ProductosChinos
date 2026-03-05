@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output, ViewChild, ElementRef, Input, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { PerfilTDEE, calcularTDEE, type RegistroDeficit } from '../../../services/deficit.service';
+import { PerfilTDEE, calcularTDEE, calcularBMR, kcalDesdePasos, type RegistroDeficit } from '../../../services/deficit.service';
 
 declare var bootstrap: any;
 
@@ -68,10 +68,21 @@ export class DeficitRegistroModalComponent implements AfterViewInit {
     }
   }
 
+  get bmrCalculado(): number | null {
+    const peso = this.form.pesoKg;
+    if (this.perfil == null || peso == null || peso <= 0) return null;
+    return calcularBMR(peso, this.perfil);
+  }
+
   get tdeeCalculado(): number | null {
     const peso = this.form.pesoKg;
     if (this.perfil == null || peso == null || peso <= 0) return null;
     return calcularTDEE(peso, this.perfil, this.form.pasosReales);
+  }
+
+  /** Kcal App: calorías de los pasos según peso, estatura y sexo del perfil. */
+  get kcalAppCalculado(): number | null {
+    return kcalDesdePasos(this.form.pasosReales, this.form.pesoKg, this.perfil);
   }
 
   abrir(): void {
@@ -108,6 +119,7 @@ export class DeficitRegistroModalComponent implements AfterViewInit {
   guardar(): void {
     const f = this.form;
     const tdeeCal = this.tdeeCalculado ?? toNumOrNull(f.tdeeCal);
+    const kcalApp = this.kcalAppCalculado ?? toNumOrNull(f.kcalApp);
     const payload: RegistroDeficitGuardadoEvent = {
       fecha: String(f.fecha ?? ''),
       pesoKg: toNumOrNull(f.pesoKg),
@@ -116,7 +128,7 @@ export class DeficitRegistroModalComponent implements AfterViewInit {
       cenaCal: toNumOrNull(f.cenaCal),
       proteinaG: toNumOrNull(f.proteinaG),
       pasosReales: toNumOrNull(f.pasosReales),
-      kcalApp: toNumOrNull(f.kcalApp),
+      kcalApp,
       tdeeCal,
       notas: String(f.notas ?? '').trim(),
     };

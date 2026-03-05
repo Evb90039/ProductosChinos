@@ -1,4 +1,3 @@
-// Paleta dorada (igual que el resto de la app)
 $gold: #FFD700;
 $goldenrod: #DAA520;
 $dark-gold: #B8860B;
@@ -29,9 +28,6 @@ $dark-gold: #B8860B;
   .form-label {
     font-weight: 600;
     color: #2c3e50;
-    i {
-      color: $goldenrod;
-    }
   }
 
   .form-control,
@@ -43,29 +39,6 @@ $dark-gold: #B8860B;
       border-color: $goldenrod;
       box-shadow: 0 0 0 0.2rem rgba(218, 165, 32, 0.25);
       outline: none;
-    }
-  }
-
-  .tdee-calculado,
-  .kcal-app-calculado {
-    background: #f8fafc;
-    color: #475569;
-    &.tdee-sin-perfil {
-      background: #fef9e7;
-      color: #92400e;
-    }
-  }
-
-  .btn-link-perfil {
-    background: none;
-    border: none;
-    color: $goldenrod;
-    text-decoration: underline;
-    cursor: pointer;
-    padding: 0;
-    font-size: inherit;
-    &:hover {
-      color: $dark-gold;
     }
   }
 }

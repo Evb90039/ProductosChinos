@@ -1,0 +1,44 @@
+<div class="modal fade" #perfilModal tabindex="-1" aria-labelledby="modalPerfilLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalPerfilLabel">
+          <i class="fas fa-user me-2"></i>
+          Mi perfil (para BMR y TDEE)
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="cerrar()" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted small mb-3">Fórmula Mifflin-St Jeor. TDEE = BMR + calorías de los pasos. Completa y guarda para que se calculen BMR y TDEE en cada registro.</p>
+        <form id="formPerfil" (ngSubmit)="$event.preventDefault(); guardarPerfil()">
+          <div class="mb-3">
+            <label for="alturaCmModal" class="form-label">Altura (cm)</label>
+            <input type="number" class="form-control" id="alturaCmModal" [(ngModel)]="perfilForm.alturaCm" name="alturaCm" min="100" max="250" placeholder="170">
+          </div>
+          <div class="mb-3">
+            <label for="edadModal" class="form-label">Edad (años)</label>
+            <input type="number" class="form-control" id="edadModal" [(ngModel)]="perfilForm.edad" name="edad" min="10" max="120" placeholder="30">
+          </div>
+          <div class="mb-3">
+            <label for="sexoModal" class="form-label">Sexo</label>
+            <select class="form-select" id="sexoModal" [(ngModel)]="perfilForm.sexo" name="sexo">
+              <option value="M">Hombre</option>
+              <option value="F">Mujer</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrar()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" form="formPerfil" [disabled]="saving">
+          @if (saving) {
+            <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+          } @else {
+            <i class="fas fa-save me-1"></i>
+          }
+          Guardar perfil
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

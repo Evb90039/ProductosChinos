@@ -13,7 +13,6 @@ import {
   orderBy,
 } from '@angular/fire/firestore';
 import type { QuerySnapshot } from 'firebase/firestore';
-import { Auth } from '@angular/fire/auth';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
@@ -34,6 +33,8 @@ export interface RegistroDeficit {
 
 const COLLECTION_NAME = 'deficit_registros';
 const PERFIL_COLLECTION = 'deficit_perfil';
+/** Documento único del perfil TDEE (sin validación por usuario). */
+const PERFIL_DOC_ID = 'perfil';
 
 /** Datos necesarios para calcular TDEE (Mifflin-St Jeor). El nivel de actividad se deduce de los pasos del día. */
 export interface PerfilTDEE {
@@ -52,20 +53,56 @@ export function factorDesdePasos(pasos: number | null | undefined): 1.2 | 1.375 
   return 1.9;                     // Extra activo
 }
 
-/** BMR Mifflin-St Jeor; TDEE = BMR * factor (factor según pasos del día). */
-export function calcularTDEE(pesoKg: number, perfil: PerfilTDEE, pasosReales: number | null | undefined): number {
+/** BMR (tasa metabólica basal) con fórmula Mifflin-St Jeor (kcal/día). */
+export function calcularBMR(pesoKg: number, perfil: PerfilTDEE): number {
   const { alturaCm, edad, sexo } = perfil;
-  const bmr =
-    10 * pesoKg + 6.25 * alturaCm - 5 * edad + (sexo === 'M' ? 5 : -161);
-  const factor = factorDesdePasos(pasosReales);
-  return Math.round(bmr * factor);
+  const bmr = 10 * pesoKg + 6.25 * alturaCm - 5 * edad + (sexo === 'M' ? 5 : -161);
+  return Math.round(bmr);
+}
+
+/**
+ * TDEE = total de calorías gastadas ese día = BMR + Kcal App (calorías de los pasos).
+ * Este valor se guarda en el registro como tdeeCal.
+ */
+export function calcularTDEE(pesoKg: number, perfil: PerfilTDEE, pasosReales: number | null | undefined): number {
+  const bmr = calcularBMR(pesoKg, perfil);
+  const kcalPasos = kcalDesdePasos(pasosReales, pesoKg, perfil) ?? 0;
+  return Math.round(bmr + kcalPasos);
+}
+
+/**
+ * Calorías quemadas por los pasos, usando peso, estatura y sexo del perfil.
+ * Fórmula: pasos → distancia (longitud de zancada desde estatura/sexo) → tiempo → MET × peso × tiempo.
+ * Si no hay perfil, usa aproximación simple: pasos × 0.04 × (peso/70).
+ */
+export function kcalDesdePasos(
+  pasosReales: number | null | undefined,
+  pesoKg: number | null | undefined,
+  perfil: PerfilTDEE | null
+): number | null {
+  const pasos = pasosReales ?? 0;
+  if (pasos <= 0) return null;
+  const peso = pesoKg ?? 70;
+  if (peso <= 0) return null;
+
+  if (perfil?.alturaCm && perfil.alturaCm > 0) {
+    const alturaM = perfil.alturaCm / 100;
+    const longitudZancadaM = alturaM * (perfil.sexo === 'F' ? 0.413 : 0.415);
+    const distanciaKm = (pasos * longitudZancadaM) / 1000;
+    const velocidadKmH = 5;
+    const tiempoH = distanciaKm / velocidadKmH;
+    const MET = 3.5;
+    const kcal = MET * peso * tiempoH;
+    return Math.round(kcal);
+  }
+
+  return Math.round(pasos * 0.04 * (peso / 70));
 }
 
 @Injectable({ providedIn: 'root' })
 export class DeficitService {
   private readonly firestore = inject(Firestore);
   private readonly ngZone = inject(NgZone);
-  private readonly auth = inject(Auth);
 
   private get collectionRef() {
     return collection(this.firestore, COLLECTION_NAME);
@@ -168,21 +205,17 @@ export class DeficitService {
     return deleteDoc(ref);
   }
 
-  /** Referencia al documento del perfil TDEE del usuario actual. */
+  /** Referencia al documento único del perfil TDEE (sin usuario). */
   private get perfilDocRef() {
-    const uid = this.auth.currentUser?.uid;
-    if (!uid) return null;
-    return doc(this.firestore, PERFIL_COLLECTION, uid);
+    return doc(this.firestore, PERFIL_COLLECTION, PERFIL_DOC_ID);
   }
 
-  /** Perfil para cálculo de TDEE (guardado en Firebase, un documento por usuario). */
+  /** Carga el perfil TDEE desde el documento fijo "perfil". */
   async getPerfil(): Promise<PerfilTDEE | null> {
-    const ref = this.perfilDocRef;
-    if (!ref) return null;
     try {
-      const snap = await getDoc(ref);
-      const data = snap.data() as Record<string, unknown> | undefined;
-      if (!data) return null;
+      const snap = await getDoc(this.perfilDocRef);
+      if (!snap.exists()) return null;
+      const data = snap.data() as Record<string, unknown>;
       const alturaCm = Number(data['alturaCm']);
       const edad = Number(data['edad']);
       const sexo = data['sexo'] === 'F' ? 'F' : 'M';
@@ -194,11 +227,9 @@ export class DeficitService {
     }
   }
 
-  /** Guarda el perfil TDEE en Firebase (por usuario). */
+  /** Guarda el perfil TDEE en Firebase (documento fijo). */
   async savePerfil(perfil: PerfilTDEE): Promise<void> {
-    const ref = this.perfilDocRef;
-    if (!ref) throw new Error('Debes iniciar sesión para guardar el perfil');
-    await setDoc(ref, {
+    await setDoc(this.perfilDocRef, {
       alturaCm: perfil.alturaCm,
       edad: perfil.edad,
       sexo: perfil.sexo,

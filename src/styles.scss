@@ -3,3 +3,32 @@
 // Import Bootstrap
 @use "bootstrap/scss/bootstrap";
 @import "bootstrap-icons/font/bootstrap-icons.css";
+
+/* Modal Mi perfil (BMR/TDEE) - estilos globales para que apliquen cuando el modal se mueve a body */
+$gold: #FFD700;
+$goldenrod: #DAA520;
+$dark-gold: #B8860B;
+
+.personal-modal-header {
+  background: linear-gradient(135deg, $goldenrod, $dark-gold) !important;
+  border-bottom: none;
+  color: white;
+}
+
+#modalPerfil .form-control:focus,
+#modalPerfil .form-select:focus {
+  border-color: $goldenrod;
+  box-shadow: 0 0 0 0.2rem rgba(218, 165, 32, 0.25);
+  outline: none;
+}
+
+#modalPerfil .modal-footer .btn-personal-primary {
+  background: linear-gradient(135deg, $goldenrod, $dark-gold);
+  border: none;
+  color: white;
+  font-weight: 600;
+  &:hover {
+    background: linear-gradient(135deg, $gold, $goldenrod);
+    color: white;
+  }
+}

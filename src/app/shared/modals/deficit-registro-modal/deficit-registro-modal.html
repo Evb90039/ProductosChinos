@@ -44,13 +44,25 @@
             <input type="number" class="form-control" id="pasosReales" [(ngModel)]="form.pasosReales" name="pasosReales" placeholder="0">
           </div>
           <div class="col-md-4">
-            <label for="kcalApp" class="form-label">Kcal App</label>
-            <input type="number" class="form-control" id="kcalApp" [(ngModel)]="form.kcalApp" name="kcalApp" placeholder="0">
+            <label for="kcalApp" class="form-label">Kcal App <span class="text-muted small">(calorías de los pasos)</span></label>
+            <div class="form-control kcal-app-calculado" readonly>{{ kcalAppCalculado ?? '—' }}</div>
           </div>
           <div class="col-md-6">
-            <label class="form-label">TDEE (cal)</label>
+            <label class="form-label">BMR (cal) <span class="text-muted small">(reposo)</span></label>
+            @if (bmrCalculado != null) {
+              <div class="form-control tdee-calculado" readonly>{{ bmrCalculado }} cal (calculado)</div>
+            } @else if (perfil) {
+              <div class="form-control tdee-calculado" readonly>Ingresa peso para calcular BMR</div>
+            } @else {
+              <div class="form-control tdee-calculado tdee-sin-perfil" readonly>
+                <button type="button" class="btn-link-perfil" (click)="abrirPerfilClick.emit()">Configura tus datos</button> para calcular BMR
+              </div>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Total gastado (TDEE) <span class="text-muted small">(se guarda)</span></label>
             @if (tdeeCalculado != null) {
-              <div class="form-control tdee-calculado" readonly>{{ tdeeCalculado }} cal (calculado)</div>
+              <div class="form-control tdee-calculado" readonly>{{ tdeeCalculado }} cal (BMR + Kcal App)</div>
             } @else if (perfil) {
               <div class="form-control tdee-calculado" readonly>Ingresa peso (y opcionalmente pasos) para calcular TDEE</div>
             } @else {
