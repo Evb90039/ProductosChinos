@@ -92,7 +92,7 @@
               @for (p of vista.productos; track p.id) {
                 <article class="product-card">
                   <a class="product-card-link" href="#" (click)="$event.preventDefault()">
-                    <div class="product-card-image-wrap">
+                    <div class="product-card-image-wrap" (click)="$event.preventDefault(); $event.stopPropagation(); imagenPrincipal(p) && abrirVisorImagen(imagenPrincipal(p)!, p.nombreProducto || 'Producto')">
                       @if (imagenPrincipal(p); as src) {
                         <img class="product-card-image" [src]="src" [alt]="p.nombreProducto || 'Producto'" loading="lazy">
                       } @else {
@@ -124,4 +124,16 @@
       </div>
     </div>
   </footer>
+
+  <!-- Visor de imagen ampliada -->
+  @if (visorImagen(); as img) {
+    <div class="store-visor-backdrop" (click)="cerrarVisorImagen()" role="button" tabindex="0" aria-label="Cerrar visor" (keydown.enter)="cerrarVisorImagen()" (keydown.space)="cerrarVisorImagen()">
+      <button type="button" class="store-visor-close" (click)="cerrarVisorImagen()" aria-label="Cerrar">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+      <div class="store-visor-content" (click)="$event.stopPropagation()">
+        <img class="store-visor-image" [src]="img.src" [alt]="img.alt" loading="eager">
+      </div>
+    </div>
+  }
 </div>

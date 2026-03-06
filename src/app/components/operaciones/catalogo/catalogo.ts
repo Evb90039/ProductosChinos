@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Observable, combineLatest, of } from 'rxjs';
@@ -32,6 +32,8 @@ export class CatalogoComponent {
   readonly searchTerm = signal<string>('');
   /** Panel de categorías abierto/cerrado. */
   readonly showCategoriasDropdown = signal<boolean>(false);
+  /** Visor de imagen ampliada: { src, alt } o null. */
+  readonly visorImagen = signal<{ src: string; alt: string } | null>(null);
 
   /** Productos en catálogo (sin filtrar por categoría). */
   private readonly productosEnCatalogo$: Observable<Producto[]> = this.productosService.obtenerProductos().pipe(
@@ -114,5 +116,18 @@ export class CatalogoComponent {
     if (!cat) return 'Todas las categorías';
     const found = vista.categorias.find((c) => c.value === cat);
     return found?.label ?? 'Todas las categorías';
+  }
+
+  abrirVisorImagen(src: string, alt: string): void {
+    this.visorImagen.set({ src, alt });
+  }
+
+  cerrarVisorImagen(): void {
+    this.visorImagen.set(null);
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.visorImagen()) this.cerrarVisorImagen();
   }
 }

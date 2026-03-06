@@ -119,3 +119,44 @@ $dark-gold: #B8860B;
 .personal-semaforo-rojo {
   color: #dc3545;
 }
+
+.personal-leyenda-semaforos {
+  .personal-semaforo {
+    font-size: 0.4rem;
+    vertical-align: middle;
+  }
+  summary {
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+}
+
+/* Vista móvil: cards por registro */
+.personal-registros-cards {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+.personal-registro-card {
+  border-radius: 0.5rem;
+  border-color: rgba(218, 165, 32, 0.3) !important;
+  .card-body {
+    padding: 0.75rem !important;
+  }
+  .row.g-2 > [class*="col-"] {
+    padding-top: 0.15rem;
+    padding-bottom: 0.15rem;
+  }
+}
+
+.personal-page .personal-page-title {
+  font-size: 1rem;
+}
+@media (min-width: 768px) {
+  .personal-page .personal-page-title.h4-md {
+    font-size: 1.25rem;
+  }
+}
