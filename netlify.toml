@@ -8,14 +8,7 @@
 
 
 
-# Las peticiones a funciones no deben ir al SPA (evitar 404)
-[[redirects]]
-  from = "/.netlify/functions/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-  force = true
-
-# Redirección SPA: el resto de rutas al index.html
+# Redirección SPA: todas las rutas al index.html (Netlify ya atiende /.netlify/functions/* sin esta regla)
 [[redirects]]
   from = "/*"
   to = "/index.html"
