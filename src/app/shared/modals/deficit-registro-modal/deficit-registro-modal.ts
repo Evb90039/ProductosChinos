@@ -14,6 +14,7 @@ export interface RegistroDeficitGuardadoEvent {
   cenaCal: number | null;
   proteinaG: number | null;
   pasosReales: number | null;
+  kcalEjercicio: number | null;
   kcalApp: number | null;
   tdeeCal: number | null;
   notas: string;
@@ -56,6 +57,7 @@ export class DeficitRegistroModalComponent implements AfterViewInit {
       cenaCal: null as number | null,
       proteinaG: null as number | null,
       pasosReales: null as number | null,
+      kcalEjercicio: null as number | null,
       kcalApp: null as number | null,
       tdeeCal: null as number | null,
       notas: '',
@@ -78,6 +80,14 @@ export class DeficitRegistroModalComponent implements AfterViewInit {
     const peso = this.form.pesoKg;
     if (this.perfil == null || peso == null || peso <= 0) return null;
     return calcularTDEE(peso, this.perfil, this.form.pasosReales);
+  }
+
+  /** Total gastado = TDEE (BMR + pasos) + ejercicio manual. */
+  get totalGastadoCalculado(): number | null {
+    const tdee = this.tdeeCalculado;
+    if (tdee == null) return null;
+    const extra = toNumOrNull(this.form.kcalEjercicio) ?? 0;
+    return Math.round(tdee + extra);
   }
 
   /** Kcal App: calorías de los pasos según peso, estatura y sexo del perfil. */
@@ -103,6 +113,7 @@ export class DeficitRegistroModalComponent implements AfterViewInit {
       cenaCal: registro.cenaCal,
       proteinaG: registro.proteinaG,
       pasosReales: registro.pasosReales,
+      kcalEjercicio: registro.kcalEjercicio,
       kcalApp: registro.kcalApp,
       tdeeCal: registro.tdeeCal,
       notas: registro.notas ?? '',
@@ -118,7 +129,7 @@ export class DeficitRegistroModalComponent implements AfterViewInit {
   /** Construye payload desde this.form y emite. Si editId, el padre actualiza; si no, agrega. */
   guardar(): void {
     const f = this.form;
-    const tdeeCal = this.tdeeCalculado ?? toNumOrNull(f.tdeeCal);
+    const tdeeCal = this.totalGastadoCalculado ?? this.tdeeCalculado ?? toNumOrNull(f.tdeeCal);
     const kcalApp = this.kcalAppCalculado ?? toNumOrNull(f.kcalApp);
     const payload: RegistroDeficitGuardadoEvent = {
       fecha: String(f.fecha ?? ''),
@@ -128,6 +139,7 @@ export class DeficitRegistroModalComponent implements AfterViewInit {
       cenaCal: toNumOrNull(f.cenaCal),
       proteinaG: toNumOrNull(f.proteinaG),
       pasosReales: toNumOrNull(f.pasosReales),
+      kcalEjercicio: toNumOrNull(f.kcalEjercicio),
       kcalApp,
       tdeeCal,
       notas: String(f.notas ?? '').trim(),

@@ -25,6 +25,8 @@ export interface RegistroDeficit {
   cenaCal: number | null;
   proteinaG: number | null;
   pasosReales: number | null;
+  /** Calorías de ejercicio adicional (no pasos) para sumar al déficit. */
+  kcalEjercicio: number | null;
   kcalApp: number | null;
   tdeeCal: number | null;
   notas: string;
@@ -126,6 +128,7 @@ export class DeficitService {
       cenaCal: this.numOrNull(r.cenaCal),
       proteinaG: this.numOrNull(r.proteinaG),
       pasosReales: this.numOrNull(r.pasosReales),
+      kcalEjercicio: this.numOrNull(r.kcalEjercicio),
       kcalApp: this.numOrNull(r.kcalApp),
       tdeeCal: this.numOrNull(r.tdeeCal),
       notas: r.notas ?? '',
@@ -151,6 +154,7 @@ export class DeficitService {
       cenaCal: toNum(data['cenaCal']),
       proteinaG: toNum(data['proteinaG']),
       pasosReales: toNum(data['pasosReales']),
+      kcalEjercicio: toNum(data['kcalEjercicio']),
       kcalApp: toNum(data['kcalApp']),
       tdeeCal: toNum(data['tdeeCal']),
       notas: toStr(data['notas']),
